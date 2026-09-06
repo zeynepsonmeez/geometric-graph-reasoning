@@ -1,0 +1,189 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/zeynep/geometric-graph-reasoning/schema/solution.schema.json",
+  "title": "Öğrenci çözümü",
+  "description": "Bir üçgen probleminin verilenleri, çizim bilgisi, öğrenci çözüm adımları ve hata etiketi. KRİTİK: 'rendering' bloğu yalnızca çizim içindir; doğrulayıcı bu bloğu okumaz.",
+  "type": "object",
+  "required": ["problem_id", "family", "figure", "steps", "label"],
+  "additionalProperties": false,
+
+  "properties": {
+    "problem_id": {
+      "type": "string",
+      "pattern": "^P[1-6]-[0-9]{4}$",
+      "description": "Problem ailesi ve sıra numarası, örn. P3-0012"
+    },
+    "family": {
+      "enum": ["P1", "P2", "P3", "P4", "P5", "P6"],
+      "description": "P1 açı hesabı · P2 ikizkenar · P3 dik üçgen · P4 üçgen eşitsizliği · P5 yardımcı elemanlar · P6 benzerlik"
+    },
+    "kazanim_kodu": {
+      "type": ["string", "null"],
+      "description": "MEB öğretim programından birebir alınır. Tahminle doldurulmaz."
+    },
+    "soru": {
+      "type": "string",
+      "description": "Problemin Türkçe metni"
+    },
+
+    "figure": {
+      "type": "object",
+      "description": "KAPALI DÜNYA. Burada listelenmeyen hiçbir ilişki 'verilmiş' sayılmaz. Doğrulayıcının gördüğü tek gerçeklik budur.",
+      "required": ["points", "segments"],
+      "additionalProperties": false,
+      "properties": {
+        "points": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^[A-Z][0-9]?$" },
+          "minItems": 3,
+          "description": "Köşeler ve yardımcı noktalar (yükseklik ayağı, orta nokta, ...)"
+        },
+        "segments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["from", "to", "type"],
+            "additionalProperties": false,
+            "properties": {
+              "from": { "type": "string" },
+              "to": { "type": "string" },
+              "type": {
+                "enum": ["side", "altitude", "median", "bisector"],
+                "description": "H2 sınıfının tespiti bu alana dayanır"
+              },
+              "length": {
+                "type": ["number", "null"],
+                "description": "null = uzunluk verilmemiş"
+              }
+            }
+          }
+        },
+        "angles": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["vertex"],
+            "additionalProperties": false,
+            "properties": {
+              "vertex": { "type": "string" },
+              "value": {
+                "type": ["number", "null"],
+                "description": "null = açı ölçüsü verilmemiş"
+              }
+            }
+          },
+          "default": []
+        },
+        "perpendicular": {
+          "type": "array",
+          "items": { "type": "string" },
+          "default": [],
+          "description": "Dik açının bulunduğu köşeler. BOŞ LİSTE = hiçbir diklik verilmemiş. H1'in kanonik dayanağı."
+        },
+        "congruent_segments": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": { "type": "string" },
+            "minItems": 2,
+            "maxItems": 2
+          },
+          "default": [],
+          "description": "Eş kenar çiftleri, örn. [[\"AB\",\"AC\"]]. İkizkenarlık buradan bilinir."
+        },
+        "similar": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": { "type": "string" },
+            "minItems": 2,
+            "maxItems": 2
+          },
+          "default": [],
+          "description": "Benzer üçgen çiftleri, örn. [[\"ABC\",\"DEF\"]]"
+        }
+      }
+    },
+
+    "rendering": {
+      "type": "object",
+      "description": "SADECE ÇİZİM İÇİN. Doğrulayıcı bu bloğu OKUMAZ — verifier.py yalnızca figure ve steps alanlarını parametre olarak alır.",
+      "required": ["coords", "bias"],
+      "additionalProperties": false,
+      "properties": {
+        "coords": {
+          "type": "object",
+          "description": "Nokta → [x, y]. Ölçekli olmak zorunda DEĞİLDİR.",
+          "additionalProperties": {
+            "type": "array",
+            "items": { "type": "number" },
+            "minItems": 2,
+            "maxItems": 2
+          }
+        },
+        "bias": {
+          "enum": ["misleading", "neutral"],
+          "description": "misleading = verilmemiş nicelikler özel durum GİBİ GÖRÜNECEK şekilde seçilir (tuzak). neutral = belirgin biçimde genel görünür."
+        },
+        "note": {
+          "type": "string",
+          "default": "Şekil ölçekli değildir.",
+          "description": "Ders kitabı geleneği. Öğrenciler bunu okur ve yine de çizime güvenir."
+        }
+      }
+    },
+
+    "steps": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 5,
+      "description": "Akıl yürütme grafı. Bir adım = bir teorem uygulaması = bir iddia. Aritmetik ayrı adım değildir.",
+      "items": {
+        "type": "object",
+        "required": ["id", "claim", "rule", "depends_on"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "pattern": "^s[0-9]+$" },
+          "claim": {
+            "type": "string",
+            "description": "Adımın ürettiği iddia, örn. \"m(B)=90\" veya \"|AC|=8.6\""
+          },
+          "rule": {
+            "type": "string",
+            "description": "Kullanılan teoremin id'si veya \"verilen\". src/theorems.py ile eşleşmelidir."
+          },
+          "depends_on": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Bu adımın dayandığı önceki adım id'leri. Boş liste = doğrudan verilenlerden."
+          }
+        }
+      }
+    },
+
+    "label": {
+      "type": "object",
+      "required": ["error_class", "error_step", "source"],
+      "additionalProperties": false,
+      "properties": {
+        "error_class": {
+          "enum": ["H0", "H1", "H2", "H3"],
+          "description": "H0 hatasız · H1 şekle aşırı güvenme · H2 tanım karıştırma · H3 ön koşulsuz teorem"
+        },
+        "error_step": {
+          "type": ["string", "null"],
+          "description": "Hatalı adımın id'si. H0 ise null. Tek hata kuralı: topolojik sırada ilk geçersiz adım."
+        },
+        "source": {
+          "type": "string",
+          "description": "\"generator\" (sentetik) veya kodlayıcı kimliği (\"A1\", \"A2\")"
+        },
+        "arithmetic_flag": {
+          "type": "boolean",
+          "default": false,
+          "description": "Aritmetik hata AYRI bayraktır, hata sınıfı değildir."
+        }
+      }
+    }
+  }
+}

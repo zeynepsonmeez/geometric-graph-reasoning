@@ -1,0 +1,21 @@
+# Graf temsili
+networkx>=3.2
+
+# Şema doğrulama
+jsonschema>=4.21
+
+# Metrikler (F1, karışıklık matrisi, Cohen kappa)
+scikit-learn>=1.4
+
+# Çizim motoru ve görselleştirme
+matplotlib>=3.8
+
+# Demo arayüzü
+streamlit>=1.32
+
+# Dil modeli kolu
+anthropic>=0.40
+python-dotenv>=1.0
+
+# Test
+pytest>=8.0

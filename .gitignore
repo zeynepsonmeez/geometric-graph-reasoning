@@ -1,0 +1,34 @@
+# Ortam değişkenleri — API anahtarı ASLA depoya girmez
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# Test / araç önbellekleri
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Deney çıktıları — sonuçlar elle işlenip raporlanır
+eval/results/*
+!eval/results/.gitkeep
+
+# Üretilen görseller
+*.png
+*.svg
+!docs/**/*.svg
+
+# Editör / işletim sistemi
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini
