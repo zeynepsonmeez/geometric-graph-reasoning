@@ -1,0 +1,107 @@
+{
+  "template_id": "P2-T01",
+  "family": "P2",
+  "kazanim_kodu": null,
+  "baslik": "İkizkenar üçgende taban açıları",
+  "aciklama": "H1: öğrenci ikizkenarlığı çizimden varsayar. H3: üçgen çeşitkenar olmasına rağmen taban açıları özelliğini uygular.",
+
+  "parametreler": {
+    "V": { "tip": "vertex_triple" },
+    "a": { "tip": "int", "min": 40, "max": 100, "adim": 2 },
+    "x": { "tip": "int", "min": 5, "max": 12 },
+    "y": { "tip": "int", "min": 6, "max": 14 }
+  },
+  "kisitlar": ["x != y"],
+
+  "figure_base": {
+    "points": ["{V0}", "{V1}", "{V2}"],
+    "segments": [
+      { "from": "{V0}", "to": "{V1}", "type": "side", "length": null },
+      { "from": "{V0}", "to": "{V2}", "type": "side", "length": null },
+      { "from": "{V1}", "to": "{V2}", "type": "side", "length": null }
+    ],
+    "angles": [
+      { "vertex": "{V0}", "value": "{a}" },
+      { "vertex": "{V1}", "value": null },
+      { "vertex": "{V2}", "value": null }
+    ],
+    "perpendicular": [],
+    "congruent_segments": [["{V0}{V1}", "{V0}{V2}"]],
+    "similar": []
+  },
+
+  "varyantlar": [
+    {
+      "sinif": "H0",
+      "hatali_adim": null,
+      "bias": "neutral",
+      "soru": "{V0}{V1}{V2} ikizkenar üçgeninde |{V0}{V1}| = |{V0}{V2}| ve m({V0}) = {a}° verilmiştir. m({V1}) kaç derecedir?",
+      "steps": [
+        {
+          "id": "s1",
+          "claim": "m({V1}) + m({V2}) = 180 - {a}",
+          "rule": "ic_acilar_toplami",
+          "depends_on": []
+        },
+        {
+          "id": "s2",
+          "claim": "m({V1}) = m({V2}) = (180 - {a})/2",
+          "rule": "ikizkenar_taban",
+          "depends_on": ["s1"]
+        }
+      ],
+      "not": "congruent_segments verilmiş; ikizkenar_taban teoreminin ön koşulu sağlanıyor."
+    },
+    {
+      "sinif": "H3",
+      "hatali_adim": "s2",
+      "bias": "neutral",
+      "soru": "{V0}{V1}{V2} üçgeninde |{V0}{V1}| = {x} br, |{V0}{V2}| = {y} br ve m({V0}) = {a}° verilmiştir. m({V1}) kaç derecedir?",
+      "figure_override": {
+        "segments": [
+          { "from": "{V0}", "to": "{V1}", "type": "side", "length": "{x}" },
+          { "from": "{V0}", "to": "{V2}", "type": "side", "length": "{y}" },
+          { "from": "{V1}", "to": "{V2}", "type": "side", "length": null }
+        ],
+        "congruent_segments": []
+      },
+      "steps": [
+        {
+          "id": "s1",
+          "claim": "m({V1}) + m({V2}) = 180 - {a}",
+          "rule": "ic_acilar_toplami",
+          "depends_on": []
+        },
+        {
+          "id": "s2",
+          "claim": "m({V1}) = m({V2}) = (180 - {a})/2",
+          "rule": "ikizkenar_taban",
+          "depends_on": ["s1"]
+        }
+      ],
+      "not": "Kenarlar {x} ve {y}, eş değil; congruent_segments boş. Öğrenci ikizkenarlığı hiç anmadan taban açıları özelliğini uyguladı → H3."
+    },
+    {
+      "sinif": "H1",
+      "hatali_adim": "s1",
+      "bias": "misleading",
+      "soru": "{V0}{V1}{V2} üçgeninde m({V0}) = {a}° verilmiştir. m({V1}) kaç derecedir?",
+      "figure_override": { "congruent_segments": [] },
+      "steps": [
+        {
+          "id": "s1",
+          "claim": "|{V0}{V1}| = |{V0}{V2}|",
+          "rule": "verilen",
+          "depends_on": []
+        },
+        {
+          "id": "s2",
+          "claim": "m({V1}) = m({V2}) = (180 - {a})/2",
+          "rule": "ikizkenar_taban",
+          "depends_on": ["s1"]
+        }
+      ],
+      "not": "congruent_segments boş; öğrenci çizimde eşit görünen kenarları 'verilen' diye iddia etti → H1."
+    }
+  ]
+}

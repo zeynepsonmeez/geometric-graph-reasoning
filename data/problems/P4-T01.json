@@ -1,0 +1,95 @@
+{
+  "template_id": "P4-T01",
+  "family": "P4",
+  "kazanim_kodu": null,
+  "baslik": "Üçgen eşitsizliği ile üçüncü kenarın aralığı",
+  "aciklama": "H3: iki kenar bilinmeden eşitsizlik uygulanır. H1: çizimde eşit görünen kenarlar eş sayılır.",
+
+  "parametreler": {
+    "V": { "tip": "vertex_triple" },
+    "a": { "tip": "int", "min": 5, "max": 15 },
+    "b": { "tip": "int", "min": 6, "max": 18 }
+  },
+  "kisitlar": ["a != b"],
+
+  "figure_base": {
+    "points": ["{V0}", "{V1}", "{V2}"],
+    "segments": [
+      { "from": "{V0}", "to": "{V1}", "type": "side", "length": "{a}" },
+      { "from": "{V1}", "to": "{V2}", "type": "side", "length": "{b}" },
+      { "from": "{V0}", "to": "{V2}", "type": "side", "length": null }
+    ],
+    "angles": [],
+    "perpendicular": [],
+    "congruent_segments": [],
+    "similar": []
+  },
+
+  "varyantlar": [
+    {
+      "sinif": "H0",
+      "hatali_adim": null,
+      "bias": "neutral",
+      "soru": "{V0}{V1}{V2} üçgeninde |{V0}{V1}| = {a} br ve |{V1}{V2}| = {b} br verilmiştir. |{V0}{V2}| uzunluğu hangi aralıkta olabilir?",
+      "steps": [
+        {
+          "id": "s1",
+          "claim": "|{b} - {a}| < |{V0}{V2}| < {a} + {b}",
+          "rule": "ucgen_esitsizligi",
+          "depends_on": []
+        }
+      ],
+      "not": "İki kenar da verilmiş; ucgen_esitsizligi teoreminin ön koşulu sağlanıyor."
+    },
+    {
+      "sinif": "H3",
+      "hatali_adim": "s1",
+      "bias": "neutral",
+      "soru": "{V0}{V1}{V2} üçgeninde |{V0}{V1}| = {a} br verilmiştir. |{V0}{V2}| uzunluğu hangi aralıkta olabilir?",
+      "figure_override": {
+        "segments": [
+          { "from": "{V0}", "to": "{V1}", "type": "side", "length": "{a}" },
+          { "from": "{V1}", "to": "{V2}", "type": "side", "length": null },
+          { "from": "{V0}", "to": "{V2}", "type": "side", "length": null }
+        ]
+      },
+      "steps": [
+        {
+          "id": "s1",
+          "claim": "0 < |{V0}{V2}| < 2 * {a}",
+          "rule": "ucgen_esitsizligi",
+          "depends_on": []
+        }
+      ],
+      "not": "Yalnızca bir kenar verilmiş; eşitsizlik için iki kenarın bilinmesi gerekir. Ön koşul (known_lengths) sağlanmadan teorem uygulandı → H3."
+    },
+    {
+      "sinif": "H1",
+      "hatali_adim": "s1",
+      "bias": "misleading",
+      "soru": "{V0}{V1}{V2} üçgeninde |{V0}{V1}| = {a} br verilmiştir. |{V0}{V2}| uzunluğu hangi aralıkta olabilir?",
+      "figure_override": {
+        "segments": [
+          { "from": "{V0}", "to": "{V1}", "type": "side", "length": "{a}" },
+          { "from": "{V1}", "to": "{V2}", "type": "side", "length": null },
+          { "from": "{V0}", "to": "{V2}", "type": "side", "length": null }
+        ]
+      },
+      "steps": [
+        {
+          "id": "s1",
+          "claim": "|{V1}{V2}| = {a}",
+          "rule": "verilen",
+          "depends_on": []
+        },
+        {
+          "id": "s2",
+          "claim": "0 < |{V0}{V2}| < 2 * {a}",
+          "rule": "ucgen_esitsizligi",
+          "depends_on": ["s1"]
+        }
+      ],
+      "not": "congruent_segments boş; öğrenci çizimde eşit görünen ikinci kenarı 'verilen' diye iddia etti → H1."
+    }
+  ]
+}

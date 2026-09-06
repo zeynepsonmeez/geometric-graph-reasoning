@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/zeynep/geometric-graph-reasoning/schema/problem_template.schema.json",
+  "title": "Problem şablonu",
+  "description": "Bir problem ailesinden örnek üretmek için kullanılan şablon. Üreteç, parametreleri rastgeleleştirip her varyanttan somut çözüm örnekleri türetir. Bir şablon, doğru çözümü (H0) ve enjekte edilebilecek hata varyantlarını AÇIKÇA içerir; üreteç hata kurgusunu kendisi uydurmaz.",
+  "type": "object",
+  "required": ["template_id", "family", "baslik", "parametreler", "figure_base", "varyantlar"],
+  "additionalProperties": false,
+
+  "properties": {
+    "template_id": {
+      "type": "string",
+      "pattern": "^P[1-6]-T[0-9]{2}$",
+      "description": "Örn. P3-T01"
+    },
+    "family": { "enum": ["P1", "P2", "P3", "P4", "P5", "P6"] },
+    "kazanim_kodu": {
+      "type": ["string", "null"],
+      "description": "MEB öğretim programından birebir alınır. Tahminle doldurulmaz; bilinmiyorsa null."
+    },
+    "baslik": { "type": "string" },
+    "aciklama": { "type": "string" },
+
+    "parametreler": {
+      "type": "object",
+      "description": "Yer tutucu adı → tanım. Metinlerde {ad} biçiminde kullanılır. vertex_triple 'V' verilirse {V0} {V1} {V2} üretilir.",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["tip"],
+        "additionalProperties": false,
+        "properties": {
+          "tip": { "enum": ["int", "vertex_triple", "vertex_sextuple"] },
+          "min": { "type": "integer" },
+          "max": { "type": "integer" },
+          "adim": { "type": "integer", "default": 1, "description": "Değer bu sayının katı olur (örn. 2 → çift sayılar)" }
+        }
+      }
+    },
+
+    "kisitlar": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": [],
+      "description": "Parametreler üzerinde sağlanması gereken Python ifadeleri, örn. \"a != b\". Geometrik tutarlılığı korur."
+    },
+
+    "figure_base": {
+      "type": "object",
+      "description": "Tüm varyantların ortak şekil tanımı. Varyantlar figure_override ile yalnızca değişen alanları ezer.",
+      "required": ["points", "segments"],
+      "additionalProperties": true
+    },
+
+    "varyantlar": {
+      "type": "array",
+      "minItems": 2,
+      "description": "En az bir H0 ve bir hata varyantı içermelidir.",
+      "items": {
+        "type": "object",
+        "required": ["sinif", "hatali_adim", "bias", "soru", "steps"],
+        "additionalProperties": false,
+        "properties": {
+          "sinif": { "enum": ["H0", "H1", "H2", "H3"] },
+          "hatali_adim": {
+            "type": ["string", "null"],
+            "description": "Hatalı adımın id'si. H0 için null."
+          },
+          "bias": { "enum": ["misleading", "neutral"] },
+          "soru": { "type": "string", "description": "Problem metni, yer tutucularla" },
+          "figure_override": {
+            "type": "object",
+            "description": "figure_base üzerine yazılacak alanlar. Hata genellikle bir verilenin KALDIRILMASIYLA kurulur.",
+            "additionalProperties": true
+          },
+          "steps": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 5,
+            "items": {
+              "type": "object",
+              "required": ["id", "claim", "rule", "depends_on"],
+              "additionalProperties": false,
+              "properties": {
+                "id": { "type": "string", "pattern": "^s[0-9]+$" },
+                "claim": { "type": "string" },
+                "rule": { "type": "string" },
+                "depends_on": { "type": "array", "items": { "type": "string" } }
+              }
+            }
+          },
+          "not": {
+            "type": "string",
+            "description": "Hatanın neden o sınıfa girdiğinin insan okunur gerekçesi. Etiketleme kılavuzuyla çapraz denetim için."
+          }
+        }
+      }
+    }
+  }
+}

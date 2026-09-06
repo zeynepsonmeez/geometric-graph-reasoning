@@ -1,0 +1,98 @@
+{
+  "template_id": "P6-T01",
+  "family": "P6",
+  "kazanim_kodu": null,
+  "baslik": "Benzer üçgenlerde orantılı kenarlar",
+  "aciklama": "H3: benzerlik verilmeden orantı kurulur. H2: karşılıklı kenarlar yanlış eşleştirilir (oran doğru bilinir, eşleme yanlıştır).",
+
+  "parametreler": {
+    "W": { "tip": "vertex_sextuple" },
+    "a": { "tip": "int", "min": 3, "max": 9 },
+    "b": { "tip": "int", "min": 4, "max": 12 },
+    "k": { "tip": "int", "min": 2, "max": 4 }
+  },
+  "kisitlar": ["a != b"],
+
+  "figure_base": {
+    "points": ["{W0}", "{W1}", "{W2}", "{W3}", "{W4}", "{W5}"],
+    "segments": [
+      { "from": "{W0}", "to": "{W1}", "type": "side", "length": "{a}" },
+      { "from": "{W1}", "to": "{W2}", "type": "side", "length": "{b}" },
+      { "from": "{W0}", "to": "{W2}", "type": "side", "length": null },
+      { "from": "{W3}", "to": "{W4}", "type": "side", "length": null },
+      { "from": "{W4}", "to": "{W5}", "type": "side", "length": null },
+      { "from": "{W3}", "to": "{W5}", "type": "side", "length": null }
+    ],
+    "angles": [],
+    "perpendicular": [],
+    "congruent_segments": [],
+    "similar": [["{W0}{W1}{W2}", "{W3}{W4}{W5}"]]
+  },
+
+  "varyantlar": [
+    {
+      "sinif": "H0",
+      "hatali_adim": null,
+      "bias": "neutral",
+      "soru": "{W0}{W1}{W2} ~ {W3}{W4}{W5} olmak üzere |{W0}{W1}| = {a} br, |{W1}{W2}| = {b} br ve benzerlik oranı {k}'dir. |{W3}{W4}| kaç birimdir?",
+      "steps": [
+        {
+          "id": "s1",
+          "claim": "|{W3}{W4}| / |{W0}{W1}| = {k}",
+          "rule": "benzerlik_orani",
+          "depends_on": []
+        },
+        {
+          "id": "s2",
+          "claim": "|{W3}{W4}| = {k} * {a}",
+          "rule": "benzerlik_orani",
+          "depends_on": ["s1"]
+        }
+      ],
+      "not": "Benzerlik verilmiş ve kenarlar doğru eşleştirilmiş: {W0}{W1} ile {W3}{W4} karşılıklıdır."
+    },
+    {
+      "sinif": "H3",
+      "hatali_adim": "s1",
+      "bias": "neutral",
+      "soru": "{W0}{W1}{W2} ve {W3}{W4}{W5} üçgenlerinde |{W0}{W1}| = {a} br ve |{W1}{W2}| = {b} br verilmiştir. |{W3}{W4}| kaç birimdir?",
+      "figure_override": { "similar": [] },
+      "steps": [
+        {
+          "id": "s1",
+          "claim": "|{W3}{W4}| / |{W0}{W1}| = {k}",
+          "rule": "benzerlik_orani",
+          "depends_on": []
+        },
+        {
+          "id": "s2",
+          "claim": "|{W3}{W4}| = {k} * {a}",
+          "rule": "benzerlik_orani",
+          "depends_on": ["s1"]
+        }
+      ],
+      "not": "figure.similar boş; benzerlik verilmeden orantı kuruldu. Ön koşul sağlanmadı → H3."
+    },
+    {
+      "sinif": "H2",
+      "hatali_adim": "s2",
+      "bias": "neutral",
+      "soru": "{W0}{W1}{W2} ~ {W3}{W4}{W5} olmak üzere |{W0}{W1}| = {a} br, |{W1}{W2}| = {b} br ve benzerlik oranı {k}'dir. |{W3}{W4}| kaç birimdir?",
+      "steps": [
+        {
+          "id": "s1",
+          "claim": "|{W3}{W4}| / |{W0}{W1}| = {k}",
+          "rule": "benzerlik_orani",
+          "depends_on": []
+        },
+        {
+          "id": "s2",
+          "claim": "|{W3}{W4}| = {k} * {b}",
+          "rule": "benzerlik_orani",
+          "depends_on": ["s1"]
+        }
+      ],
+      "not": "Benzerlik doğru, oran doğru; ancak {W3}{W4}'ün karşılığı {W0}{W1}'dir, {W1}{W2} değil. Karşılıklı kenarlar yanlış eşleştirilmiş → taksonomi §4.3 gereği H2."
+    }
+  ]
+}

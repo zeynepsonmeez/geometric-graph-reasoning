@@ -1,0 +1,104 @@
+{
+  "template_id": "P1-T01",
+  "family": "P1",
+  "kazanim_kodu": null,
+  "baslik": "Üçgende dış açı",
+  "aciklama": "H3: dış açı, kendisine KOMŞU OLMAYAN iki iç açının toplamıdır; öğrenci yanlış açı çiftini kullanır. H1: verilmemiş bir açıyı çizimden 90° sayar.",
+
+  "parametreler": {
+    "V": { "tip": "vertex_triple" },
+    "a": { "tip": "int", "min": 30, "max": 70 },
+    "b": { "tip": "int", "min": 30, "max": 70 }
+  },
+  "kisitlar": ["a + b < 170", "a != b"],
+
+  "figure_base": {
+    "points": ["{V0}", "{V1}", "{V2}"],
+    "segments": [
+      { "from": "{V0}", "to": "{V1}", "type": "side", "length": null },
+      { "from": "{V1}", "to": "{V2}", "type": "side", "length": null },
+      { "from": "{V0}", "to": "{V2}", "type": "side", "length": null }
+    ],
+    "angles": [
+      { "vertex": "{V0}", "value": "{a}" },
+      { "vertex": "{V1}", "value": "{b}" },
+      { "vertex": "{V2}", "value": null }
+    ],
+    "perpendicular": [],
+    "congruent_segments": [],
+    "similar": []
+  },
+
+  "varyantlar": [
+    {
+      "sinif": "H0",
+      "hatali_adim": null,
+      "bias": "neutral",
+      "soru": "{V0}{V1}{V2} üçgeninde m({V0}) = {a}° ve m({V1}) = {b}° verilmiştir. {V2} köşesindeki dış açının ölçüsü kaç derecedir?",
+      "steps": [
+        {
+          "id": "s1",
+          "claim": "m({V2}) = 180 - {a} - {b}",
+          "rule": "ic_acilar_toplami",
+          "depends_on": []
+        },
+        {
+          "id": "s2",
+          "claim": "dis({V2}) = {a} + {b}",
+          "rule": "dis_aci",
+          "depends_on": []
+        }
+      ],
+      "not": "Dış açı, komşu olmayan iki iç açının ({V0} ve {V1}) toplamıdır. s1 doğru ama sonuca katkısız dolgu adımıdır."
+    },
+    {
+      "sinif": "H3",
+      "hatali_adim": "s2",
+      "bias": "neutral",
+      "soru": "{V0}{V1}{V2} üçgeninde m({V0}) = {a}° ve m({V1}) = {b}° verilmiştir. {V2} köşesindeki dış açının ölçüsü kaç derecedir?",
+      "steps": [
+        {
+          "id": "s1",
+          "claim": "m({V2}) = 180 - {a} - {b}",
+          "rule": "ic_acilar_toplami",
+          "depends_on": []
+        },
+        {
+          "id": "s2",
+          "claim": "dis({V2}) = {a} + (180 - {a} - {b})",
+          "rule": "dis_aci",
+          "depends_on": ["s1"]
+        }
+      ],
+      "not": "Öğrenci {V2}'nin KENDİ iç açısını topladı; oysa dış açı komşu OLMAYAN iki iç açının toplamıdır. Ön koşul (doğru açı çifti) sağlanmadı → H3."
+    },
+    {
+      "sinif": "H1",
+      "hatali_adim": "s1",
+      "bias": "misleading",
+      "soru": "{V0}{V1}{V2} üçgeninde m({V0}) = {a}° verilmiştir. m({V2}) kaç derecedir?",
+      "figure_override": {
+        "angles": [
+          { "vertex": "{V0}", "value": "{a}" },
+          { "vertex": "{V1}", "value": null },
+          { "vertex": "{V2}", "value": null }
+        ]
+      },
+      "steps": [
+        {
+          "id": "s1",
+          "claim": "m({V1}) = 90",
+          "rule": "verilen",
+          "depends_on": []
+        },
+        {
+          "id": "s2",
+          "claim": "m({V2}) = 180 - {a} - 90",
+          "rule": "ic_acilar_toplami",
+          "depends_on": ["s1"]
+        }
+      ],
+      "not": "{V1} açısı verilmemiş ve figure.perpendicular boş; öğrenci çizimde dik görünen açıyı 'verilen' diye iddia etti → H1."
+    }
+  ]
+}
