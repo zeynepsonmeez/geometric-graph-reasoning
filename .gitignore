@@ -32,3 +32,6 @@ eval/results/*
 .idea/
 Thumbs.db
 desktop.ini
+
+# Uretilen derlem — deterministik, "python src/generator.py" ile yeniden uretilir
+data/synthetic/*.json

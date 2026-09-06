@@ -41,6 +41,7 @@ class Variant:
     steps: list[dict[str, Any]]
     figure_override: dict[str, Any]
     aciklama: str = ""
+    cizim_ipucu: dict[str, Any] | None = None
 
     @property
     def step_ids(self) -> set[str]:
@@ -85,6 +86,7 @@ def _to_variant(raw: dict[str, Any]) -> Variant:
         steps=raw["steps"],
         figure_override=raw.get("figure_override", {}),
         aciklama=raw.get("not", ""),
+        cizim_ipucu=raw.get("cizim_ipucu"),
     )
 
 
@@ -142,7 +144,13 @@ def check(template: Template) -> list[str]:
 
     bilinen = template.placeholder_names()
     kullanilan = collect_placeholders(
-        {"f": template.figure_base, "v": [(v.soru, v.steps, v.figure_override) for v in template.varyantlar]}
+        {
+            "f": template.figure_base,
+            "v": [
+                (v.soru, v.steps, v.figure_override, v.cizim_ipucu)
+                for v in template.varyantlar
+            ],
+        }
     )
     for eksik in sorted(kullanilan - bilinen):
         problems.append(f"{tid}: '{{{eksik}}}' kullanılıyor ama parametrelerde tanımlı değil")
@@ -163,6 +171,15 @@ def check(template: Template) -> list[str]:
                 problems.append(f"{etiket}: hatali_adim '{v.hatali_adim}' adımlar arasında yok")
             if not v.aciklama:
                 problems.append(f"{etiket}: 'not' alanı boş — sınıf gerekçesi yazılmalı")
+
+        # Yanıltıcı çizim, NEYİ özel durum gibi göstereceğini açıkça söylemelidir.
+        if v.bias == "misleading" and not v.cizim_ipucu:
+            problems.append(
+                f"{etiket}: bias='misleading' ama cizim_ipucu yok — "
+                f"çizim motoru neyi yanıltıcı göstereceğini bilemez"
+            )
+        if v.bias == "neutral" and v.cizim_ipucu:
+            problems.append(f"{etiket}: bias='neutral' varyantta cizim_ipucu anlamsız")
 
         # depends_on yalnızca kendinden ÖNCEKİ adımlara işaret edebilir (DAG, çevrimsiz)
         gorulen: set[str] = set()

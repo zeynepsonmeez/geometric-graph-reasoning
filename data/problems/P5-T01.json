@@ -4,27 +4,56 @@
   "kazanim_kodu": null,
   "baslik": "Yardımcı elemanlar: yükseklik ve kenarortay ayrımı",
   "aciklama": "H2'nin kanonik şablonu: yükseklik ayağı H ile kenar orta noktası M karıştırılır. Bu iki nokta yalnızca ikizkenar üçgende çakışır.",
-
   "parametreler": {
-    "V": { "tip": "vertex_triple" },
-    "m": { "tip": "int", "min": 8, "max": 24, "adim": 2 }
+    "V": {
+      "tip": "vertex_triple"
+    },
+    "m": {
+      "tip": "int",
+      "min": 8,
+      "max": 24,
+      "adim": 2
+    }
   },
   "kisitlar": [],
-
   "figure_base": {
-    "points": ["{V0}", "{V1}", "{V2}", "H"],
+    "points": [
+      "{V0}",
+      "{V1}",
+      "{V2}",
+      "H"
+    ],
     "segments": [
-      { "from": "{V1}", "to": "{V2}", "type": "side", "length": "{m}" },
-      { "from": "{V0}", "to": "{V1}", "type": "side", "length": null },
-      { "from": "{V0}", "to": "{V2}", "type": "side", "length": null },
-      { "from": "{V0}", "to": "H", "type": "altitude", "length": null }
+      {
+        "from": "{V1}",
+        "to": "{V2}",
+        "type": "side",
+        "length": "{m}"
+      },
+      {
+        "from": "{V0}",
+        "to": "{V1}",
+        "type": "side",
+        "length": null
+      },
+      {
+        "from": "{V0}",
+        "to": "{V2}",
+        "type": "side",
+        "length": null
+      },
+      {
+        "from": "{V0}",
+        "to": "H",
+        "type": "altitude",
+        "length": null
+      }
     ],
     "angles": [],
     "perpendicular": [],
     "congruent_segments": [],
     "similar": []
   },
-
   "varyantlar": [
     {
       "sinif": "H0",
@@ -54,7 +83,11 @@
           "depends_on": []
         }
       ],
-      "not": "kenarortay teoremi type=='median' gerektirir; [{V0}H] ise 'altitude'. Kenar tipi yanlış eşleştirilmiş → taksonomi §4.3 gereği H2."
+      "not": "kenarortay teoremi type=='median' gerektirir; [{V0}H] ise 'altitude'. Kenar tipi yanlış eşleştirilmiş → taksonomi §4.3 gereği H2.",
+      "cizim_ipucu": {
+        "tip": "ikizkenar",
+        "tepe": "{V0}"
+      }
     },
     {
       "sinif": "H1",
@@ -72,10 +105,16 @@
           "id": "s2",
           "claim": "|{V1}H| = |H{V2}| = {m}/2",
           "rule": "ikizkenar_taban",
-          "depends_on": ["s1"]
+          "depends_on": [
+            "s1"
+          ]
         }
       ],
-      "not": "figure.congruent_segments boş; öğrenci üçgeni çizime bakarak ikizkenar varsayıp 'verilen' diye iddia etti → H1. İkizkenar olsaydı H ile orta nokta çakışır ve sonuç doğru olurdu."
+      "not": "figure.congruent_segments boş; öğrenci üçgeni çizime bakarak ikizkenar varsayıp 'verilen' diye iddia etti → H1. İkizkenar olsaydı H ile orta nokta çakışır ve sonuç doğru olurdu.",
+      "cizim_ipucu": {
+        "tip": "ikizkenar",
+        "tepe": "{V0}"
+      }
     }
   ]
 }

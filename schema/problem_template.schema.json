@@ -91,6 +91,20 @@
           "not": {
             "type": "string",
             "description": "Hatanın neden o sınıfa girdiğinin insan okunur gerekçesi. Etiketleme kılavuzuyla çapraz denetim için."
+          },
+          "cizim_ipucu": {
+            "type": "object",
+            "description": "bias='misleading' varyantlarda ZORUNLU: çizimin NEYİ özel durum gibi göstereceğini söyler. Metin ayrıştırmaya gerek kalmaması için açıkça yazılır.",
+            "required": ["tip"],
+            "additionalProperties": true,
+            "properties": {
+              "tip": {
+                "enum": ["dik_aci", "ikizkenar"],
+                "description": "dik_aci: 'kose' köşesi 90° görünür. ikizkenar: 'tepe' köşesinden çıkan iki kenar eşit görünür."
+              },
+              "kose": { "type": "string" },
+              "tepe": { "type": "string" }
+            }
           }
         }
       }

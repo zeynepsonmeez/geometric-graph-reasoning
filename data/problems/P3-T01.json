@@ -4,27 +4,57 @@
   "kazanim_kodu": null,
   "baslik": "Dik üçgende üçüncü kenarın uzunluğu",
   "aciklama": "H1'in kanonik şablonu: öğrenci dikliği çizimden varsayıp Pisagor'a geçer. H3 varyantında koşulu hiç anmadan doğrudan uygular.",
-
   "parametreler": {
-    "V": { "tip": "vertex_triple" },
-    "a": { "tip": "int", "min": 3, "max": 12 },
-    "b": { "tip": "int", "min": 4, "max": 15 }
+    "V": {
+      "tip": "vertex_triple"
+    },
+    "a": {
+      "tip": "int",
+      "min": 3,
+      "max": 12
+    },
+    "b": {
+      "tip": "int",
+      "min": 4,
+      "max": 15
+    }
   },
-  "kisitlar": ["a != b"],
-
+  "kisitlar": [
+    "a != b"
+  ],
   "figure_base": {
-    "points": ["{V0}", "{V1}", "{V2}"],
+    "points": [
+      "{V0}",
+      "{V1}",
+      "{V2}"
+    ],
     "segments": [
-      { "from": "{V0}", "to": "{V1}", "type": "side", "length": "{a}" },
-      { "from": "{V1}", "to": "{V2}", "type": "side", "length": "{b}" },
-      { "from": "{V0}", "to": "{V2}", "type": "side", "length": null }
+      {
+        "from": "{V0}",
+        "to": "{V1}",
+        "type": "side",
+        "length": "{a}"
+      },
+      {
+        "from": "{V1}",
+        "to": "{V2}",
+        "type": "side",
+        "length": "{b}"
+      },
+      {
+        "from": "{V0}",
+        "to": "{V2}",
+        "type": "side",
+        "length": null
+      }
     ],
     "angles": [],
-    "perpendicular": ["{V1}"],
+    "perpendicular": [
+      "{V1}"
+    ],
     "congruent_segments": [],
     "similar": []
   },
-
   "varyantlar": [
     {
       "sinif": "H0",
@@ -46,7 +76,9 @@
       "hatali_adim": "s1",
       "bias": "misleading",
       "soru": "{V0}{V1}{V2} üçgeninde |{V0}{V1}| = {a} br ve |{V1}{V2}| = {b} br olarak verilmiştir. |{V0}{V2}| kaç birimdir?",
-      "figure_override": { "perpendicular": [] },
+      "figure_override": {
+        "perpendicular": []
+      },
       "steps": [
         {
           "id": "s1",
@@ -58,17 +90,25 @@
           "id": "s2",
           "claim": "|{V0}{V2}|^2 = {a}^2 + {b}^2",
           "rule": "pisagor",
-          "depends_on": ["s1"]
+          "depends_on": [
+            "s1"
+          ]
         }
       ],
-      "not": "figure.perpendicular boş; öğrenci dikliği 'verilen' diye iddia etti. Taksonomi §4.2 gereği H1."
+      "not": "figure.perpendicular boş; öğrenci dikliği 'verilen' diye iddia etti. Taksonomi §4.2 gereği H1.",
+      "cizim_ipucu": {
+        "tip": "dik_aci",
+        "kose": "{V1}"
+      }
     },
     {
       "sinif": "H3",
       "hatali_adim": "s1",
       "bias": "neutral",
       "soru": "{V0}{V1}{V2} üçgeninde |{V0}{V1}| = {a} br ve |{V1}{V2}| = {b} br olarak verilmiştir. |{V0}{V2}| kaç birimdir?",
-      "figure_override": { "perpendicular": [] },
+      "figure_override": {
+        "perpendicular": []
+      },
       "steps": [
         {
           "id": "s1",
