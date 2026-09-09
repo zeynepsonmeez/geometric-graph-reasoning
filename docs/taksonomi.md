@@ -226,6 +226,10 @@ sınıfını bilebilir, sınıf ile aile arasında yapay bir korelasyon oluşurd
 | P5-T01 | Yükseklik / kenarortay | `yukseklik`, `kenarortay` | **H2**, H1 | `MAT.10.1.2` ⚠ |
 | P5-T02 | Açıortay / kenarortay | `aciortay`, `kenarortay` | **H2**, H3 | `MAT.10.1.2` ⚠ |
 | P6-T01 | Benzerlik oranı | `benzerlik_orani` | H2, H3 | `MAT.9.4.2` |
+| P1-T02 | Dış açıdan iç açıya | `dis_aci`, `ic_acilar_toplami` | H1, H3 | `MAT.9.3.1` |
+| P2-T02 | Taban açısından tepe açısına | `ikizkenar_taban` | H1, H3 | `MAT.9.3.1` |
+| P4-T02 | En büyük tam sayı kenar | `ucgen_esitsizligi` | H1, H3 | `MAT.9.3.1` |
+| P6-T02 | Oranı iki kenardan bulma | `benzerlik_orani` | **H2**, H3 | `MAT.9.4.2` |
 
 Gerçekleşen dağılım: **H1 → 5 aile, H2 → 3 aile (P3, P5, P6), H3 → 6 aile.**
 
@@ -272,11 +276,15 @@ matematik öğretim programı üçgenler kazanımları ile hizalanmıştır."**
 
 | Sınıf | Sentetik | Elle yazılmış | Toplam |
 |---|---|---|---|
-| H0 | 100 | 8 | 108 |
-| H1 | 100 | 8 | 108 |
-| H2 | 100 | 7 | 107 |
-| H3 | 100 | 7 | 107 |
-| **Toplam** | **400** | **30** | **430** |
+| H0 | 150 | 8 | 158 |
+| H1 | 150 | 8 | 158 |
+| H2 | 150 | 7 | 157 |
+| H3 | 150 | 7 | 157 |
+| **Toplam** | **600** | **30** | **630** |
+
+Sentetik derlem 12 şablondan (36 farklı çözüm iskeleti) üretilir. Sayıyı
+artırmanın doğru yolu şablon eklemektir: şablon sabitken derlemi büyütmek
+aynı iskeletleri daha çok tekrarlar, çeşitlilik artmaz.
 
 Elle yazılan küme sentetik kümeye **karıştırılmaz**; ayrı tutulmuş gerçekçilik
 denetimi ve κ ölçümü kümesidir. Sonuçlar iki küme için **ayrı ayrı** raporlanır.

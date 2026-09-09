@@ -119,7 +119,7 @@ gerçek öğrenci verisi (KVKK + etik kurul) · GNN
 
 | Küme | Sayı | Amaç |
 |---|---|---|
-| `data/synthetic/` | 400 | Üreteçten, dengeli dağılım |
+| `data/synthetic/` | 600 | Üreteçten, dengeli dağılım |
 | `data/handwritten/` | 30 | **Ayrı tutulur.** Gerçekçilik denetimi + Cohen κ |
 
 Elle yazılan kümede etiketler çözüm dosyalarında **bulunmaz**; `labels/A1.json` ve
@@ -157,7 +157,7 @@ pip install -r requirements.txt
 Dil modeli kolu için `.env` içine API anahtarı konur (`.gitignore`'dadır).
 
 ```bash
-python src/generator.py                    # 400 ornek uret
+python src/generator.py                    # 600 ornek uret
 python eval/run_experiment.py --dry-run    # deneyi ucretsiz prova et
 streamlit run app.py                       # demo
 ```
@@ -169,8 +169,8 @@ streamlit run app.py                       # demo
 | Bileşen | Durum |
 |---|---|
 | Taksonomi, şema, teorem kütüphanesi | ✅ |
-| Problem şablonları (8 şablon, P1–P6) | ✅ |
-| Sentetik üreteç | ✅ 400 örnek, sınıflar dengeli |
+| Problem şablonları (12 şablon, P1–P6) | ✅ |
+| Sentetik üreteç | ✅ 600 örnek, sınıflar dengeli |
 | Çizim motoru | ✅ `bias` + SVG |
 | Sembolik doğrulayıcı | ✅ |
 | LLM kolu (K1–K4) | ✅ çevrimdışı test edildi |
