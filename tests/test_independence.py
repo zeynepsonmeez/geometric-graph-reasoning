@@ -23,6 +23,10 @@ FORBIDDEN_FOR_GENERATOR = {"verifier", "theorems"}
 #: Doğrulayıcının ASLA kullanmaması gereken modüller.
 FORBIDDEN_FOR_VERIFIER = {"generator", "renderer"}
 
+#: Dil modeli kolunun ASLA kullanmaması gereken modüller.
+#: Model ne oracle'ı ne üreteci görür; deneyin geçerliliği buna dayanır.
+FORBIDDEN_FOR_LLM = {"verifier", "generator", "theorems"}
+
 
 def _imported_module_names(path: Path) -> set[str]:
     """Bir dosyanın import ettiği modüllerin kök adlarını döndürür."""
@@ -66,6 +70,15 @@ def test_generator_does_not_import_verifier_side() -> None:
 
 def test_verifier_does_not_import_generator_side() -> None:
     _assert_clean("verifier.py", FORBIDDEN_FOR_VERIFIER)
+
+
+def test_llm_checker_sees_neither_oracle_nor_generator() -> None:
+    """Dil modeli kolu, karsilastirildigi oracle'i goremez.
+
+    llm_checker verifier'i import ederse deney kendi altin standardini taklit
+    etmeye baslar ve K1/K2/K3 karsilastirmasi anlamini yitirir.
+    """
+    _assert_clean("llm_checker.py", FORBIDDEN_FOR_LLM)
 
 
 def test_verifier_never_reads_rendering_block() -> None:

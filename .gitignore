@@ -35,3 +35,6 @@ desktop.ini
 
 # Uretilen derlem — deterministik, "python src/generator.py" ile yeniden uretilir
 data/synthetic/*.json
+
+# LLM yanit onbellegi — yeniden calistirma ucret dogurmasin diye tutulur, depoya girmez
+eval/results/cache/
