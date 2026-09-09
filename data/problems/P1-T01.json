@@ -1,7 +1,7 @@
 {
   "template_id": "P1-T01",
   "family": "P1",
-  "kazanim_kodu": null,
+  "kazanim_kodu": "MAT.9.3.1",
   "baslik": "Üçgende dış açı",
   "aciklama": "H3: dış açı, kendisine KOMŞU OLMAYAN iki iç açının toplamıdır; öğrenci yanlış açı çiftini kullanır. H1: verilmemiş bir açıyı çizimden 90° sayar.",
   "parametreler": {

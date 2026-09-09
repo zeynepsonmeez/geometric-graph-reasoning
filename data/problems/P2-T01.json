@@ -1,7 +1,7 @@
 {
   "template_id": "P2-T01",
   "family": "P2",
-  "kazanim_kodu": null,
+  "kazanim_kodu": "MAT.9.3.1",
   "baslik": "İkizkenar üçgende taban açıları",
   "aciklama": "H1: öğrenci ikizkenarlığı çizimden varsayar. H3: üçgen çeşitkenar olmasına rağmen taban açıları özelliğini uygular.",
   "parametreler": {

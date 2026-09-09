@@ -1,7 +1,7 @@
 {
   "template_id": "P3-T01",
   "family": "P3",
-  "kazanim_kodu": null,
+  "kazanim_kodu": "MAT.9.4.4",
   "baslik": "Dik üçgende üçüncü kenarın uzunluğu",
   "aciklama": "H1'in kanonik şablonu: öğrenci dikliği çizimden varsayıp Pisagor'a geçer. H3 varyantında koşulu hiç anmadan doğrudan uygular.",
   "parametreler": {

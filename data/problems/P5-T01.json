@@ -1,7 +1,7 @@
 {
   "template_id": "P5-T01",
   "family": "P5",
-  "kazanim_kodu": null,
+  "kazanim_kodu": "MAT.10.1.2",
   "baslik": "Yardımcı elemanlar: yükseklik ve kenarortay ayrımı",
   "aciklama": "H2'nin kanonik şablonu: yükseklik ayağı H ile kenar orta noktası M karıştırılır. Bu iki nokta yalnızca ikizkenar üçgende çakışır.",
   "parametreler": {

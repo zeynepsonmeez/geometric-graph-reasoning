@@ -1,35 +1,78 @@
 {
   "template_id": "P5-T02",
   "family": "P5",
-  "kazanim_kodu": null,
+  "kazanim_kodu": "MAT.10.1.2",
   "baslik": "Yardımcı elemanlar: açıortay ve kenarortay ayrımı",
   "aciklama": "Açıortay AÇIYI ikiye böler, kenarı değil. Kenarortay KENARI ikiye böler, açıyı değil. Bu ikisinin karıştırılması H2'nin ikinci kanonik biçimidir. H2'yi P5-T01'den bağımsız ikinci bir kaynaktan besler.",
-
   "parametreler": {
-    "V": { "tip": "vertex_triple" },
-    "a": { "tip": "int", "min": 40, "max": 96, "adim": 4 },
-    "m": { "tip": "int", "min": 10, "max": 26, "adim": 2 }
+    "V": {
+      "tip": "vertex_triple"
+    },
+    "a": {
+      "tip": "int",
+      "min": 40,
+      "max": 96,
+      "adim": 4
+    },
+    "m": {
+      "tip": "int",
+      "min": 10,
+      "max": 26,
+      "adim": 2
+    }
   },
   "kisitlar": [],
-
   "figure_base": {
-    "points": ["{V0}", "{V1}", "{V2}", "D"],
+    "points": [
+      "{V0}",
+      "{V1}",
+      "{V2}",
+      "D"
+    ],
     "segments": [
-      { "from": "{V1}", "to": "{V2}", "type": "side", "length": "{m}" },
-      { "from": "{V0}", "to": "{V1}", "type": "side", "length": null },
-      { "from": "{V0}", "to": "{V2}", "type": "side", "length": null },
-      { "from": "{V0}", "to": "D", "type": "bisector", "length": null }
+      {
+        "from": "{V1}",
+        "to": "{V2}",
+        "type": "side",
+        "length": "{m}"
+      },
+      {
+        "from": "{V0}",
+        "to": "{V1}",
+        "type": "side",
+        "length": null
+      },
+      {
+        "from": "{V0}",
+        "to": "{V2}",
+        "type": "side",
+        "length": null
+      },
+      {
+        "from": "{V0}",
+        "to": "D",
+        "type": "bisector",
+        "length": null
+      }
     ],
     "angles": [
-      { "vertex": "{V0}", "value": "{a}" },
-      { "vertex": "{V1}", "value": null },
-      { "vertex": "{V2}", "value": null }
+      {
+        "vertex": "{V0}",
+        "value": "{a}"
+      },
+      {
+        "vertex": "{V1}",
+        "value": null
+      },
+      {
+        "vertex": "{V2}",
+        "value": null
+      }
     ],
     "perpendicular": [],
     "congruent_segments": [],
     "similar": []
   },
-
   "varyantlar": [
     {
       "sinif": "H0",
@@ -60,7 +103,10 @@
         }
       ],
       "not": "kenarortay teoremi type=='median' gerektirir; [{V0}D] ise 'bisector'. Açıortay açıyı böler, kenarı değil → taksonomi §4.3 gereği H2.",
-      "cizim_ipucu": { "tip": "ikizkenar", "tepe": "{V0}" }
+      "cizim_ipucu": {
+        "tip": "ikizkenar",
+        "tepe": "{V0}"
+      }
     },
     {
       "sinif": "H3",
@@ -78,7 +124,9 @@
           "id": "s2",
           "claim": "m({V1}) = m({V2}) = (180 - {a})/2",
           "rule": "ikizkenar_taban",
-          "depends_on": ["s1"]
+          "depends_on": [
+            "s1"
+          ]
         }
       ],
       "not": "congruent_segments boş; üçgenin ikizkenar olduğu verilmedi. Açıortay olması ikizkenarlık anlamına gelmez. Öğrenci koşulu hiç anmadan taban açıları özelliğini uyguladı → H3."

@@ -4,7 +4,7 @@ Sistemin tanıdığı çıkarım kurallarını, her birinin ön koşullarıyla b
 Doğrulayıcının bilgi tabanıdır: bir adımın geçerliliği, kullandığı teoremin
 ön koşullarının `figure` bloğu tarafından sağlanıp sağlanmadığına bakılarak belirlenir.
 
-Kapsam: 9. sınıf üçgenler ünitesi, hesaplama tipi problemler (bkz. docs/taksonomi.md).
+Kapsam: 9–10. sınıf üçgenler kazanımları, hesaplama tipi problemler (bkz. docs/taksonomi.md).
 
 DİKKAT: Bu modül `generator.py` tarafından import EDİLMEZ. Üreteç, hataları
 docs/taksonomi.md spesifikasyonundan bağımsız olarak kurar. Bkz. tests/test_independence.py
@@ -149,6 +149,32 @@ PISAGOR = Theorem(
 )
 
 
+HIPOTENUS_KENARORTAY = Theorem(
+    id="hipotenus_kenarortay",
+    name_tr="Dik üçgende hipotenüse ait kenarortay, hipotenüsün yarısıdır",
+    preconditions=(
+        Precondition(
+            kind=PredicateKind.RIGHT_ANGLE,
+            params=("vertex",),
+            on_violation=ErrorClass.MISSING_PRECOND,
+            message="Bu özellik yalnızca DİK üçgende geçerlidir.",
+        ),
+        Precondition(
+            kind=PredicateKind.SEGMENT_TYPE,
+            params=("segment", "median"),
+            on_violation=ErrorClass.DEFINITION_MIX,
+            message=(
+                "Hipotenüsün yarısı olma özelliği KENARORTAYA aittir. "
+                "Hipotenüse ait yükseklik ile kenarortay karıştırılmış."
+            ),
+        ),
+    ),
+    produces="length",
+    families=("P3",),
+    note="H2'nin üçüncü kaynağı: hipotenüse ait yükseklik ile kenarortay karıştırılır.",
+)
+
+
 # --------------------------------------------------------------------------
 # P4 — Üçgen eşitsizliği
 # --------------------------------------------------------------------------
@@ -261,6 +287,7 @@ THEOREMS: dict[str, Theorem] = {
         DIS_ACI,
         IKIZKENAR_TABAN,
         PISAGOR,
+        HIPOTENUS_KENARORTAY,
         UCGEN_ESITSIZLIGI,
         YUKSEKLIK,
         KENARORTAY,

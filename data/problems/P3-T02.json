@@ -1,0 +1,137 @@
+{
+  "template_id": "P3-T02",
+  "family": "P3",
+  "kazanim_kodu": "MAT.10.1.2",
+  "baslik": "Dik üçgende hipotenüse ait kenarortay",
+  "aciklama": "Hipotenüsün yarısı olma özelliği KENARORTAYA aittir. Öğrenci bunu hipotenüse ait yüksekliğe uygularsa H2 olur. H2'yi P5 ve P6'dan bağımsız üçüncü bir kaynaktan besler.",
+  "parametreler": {
+    "V": {
+      "tip": "vertex_triple"
+    },
+    "c": {
+      "tip": "int",
+      "min": 10,
+      "max": 28,
+      "adim": 2
+    }
+  },
+  "kisitlar": [],
+  "figure_base": {
+    "points": [
+      "{V0}",
+      "{V1}",
+      "{V2}",
+      "N"
+    ],
+    "segments": [
+      {
+        "from": "{V0}",
+        "to": "{V2}",
+        "type": "side",
+        "length": "{c}"
+      },
+      {
+        "from": "{V0}",
+        "to": "{V1}",
+        "type": "side",
+        "length": null
+      },
+      {
+        "from": "{V1}",
+        "to": "{V2}",
+        "type": "side",
+        "length": null
+      },
+      {
+        "from": "{V1}",
+        "to": "N",
+        "type": "median",
+        "length": null
+      }
+    ],
+    "angles": [],
+    "perpendicular": [
+      "{V1}"
+    ],
+    "congruent_segments": [],
+    "similar": []
+  },
+  "varyantlar": [
+    {
+      "sinif": "H0",
+      "hatali_adim": null,
+      "bias": "neutral",
+      "soru": "{V0}{V1}{V2} üçgeninde m({V1}) = 90°, |{V0}{V2}| = {c} br ve [{V1}N] hipotenüse ait kenarortaydır. |{V1}N| kaç birimdir?",
+      "steps": [
+        {
+          "id": "s1",
+          "claim": "|{V1}N| = {c}/2",
+          "rule": "hipotenus_kenarortay",
+          "depends_on": []
+        }
+      ],
+      "not": "Diklik verilmiş ve [{V1}N] gerçekten kenarortay; her iki ön koşul da sağlanıyor."
+    },
+    {
+      "sinif": "H2",
+      "hatali_adim": "s1",
+      "bias": "neutral",
+      "soru": "{V0}{V1}{V2} üçgeninde m({V1}) = 90°, |{V0}{V2}| = {c} br ve [{V1}N] hipotenüse ait yüksekliktir. |{V1}N| kaç birimdir?",
+      "figure_override": {
+        "segments": [
+          {
+            "from": "{V0}",
+            "to": "{V2}",
+            "type": "side",
+            "length": "{c}"
+          },
+          {
+            "from": "{V0}",
+            "to": "{V1}",
+            "type": "side",
+            "length": null
+          },
+          {
+            "from": "{V1}",
+            "to": "{V2}",
+            "type": "side",
+            "length": null
+          },
+          {
+            "from": "{V1}",
+            "to": "N",
+            "type": "altitude",
+            "length": null
+          }
+        ]
+      },
+      "steps": [
+        {
+          "id": "s1",
+          "claim": "|{V1}N| = {c}/2",
+          "rule": "hipotenus_kenarortay",
+          "depends_on": []
+        }
+      ],
+      "not": "hipotenus_kenarortay teoremi type=='median' gerektirir; [{V1}N] ise 'altitude'. Hipotenüse ait yükseklik ile kenarortay karıştırılmış → taksonomi §4.3 gereği H2."
+    },
+    {
+      "sinif": "H3",
+      "hatali_adim": "s1",
+      "bias": "neutral",
+      "soru": "{V0}{V1}{V2} üçgeninde |{V0}{V2}| = {c} br ve [{V1}N] kenarortaydır. |{V1}N| kaç birimdir?",
+      "figure_override": {
+        "perpendicular": []
+      },
+      "steps": [
+        {
+          "id": "s1",
+          "claim": "|{V1}N| = {c}/2",
+          "rule": "hipotenus_kenarortay",
+          "depends_on": []
+        }
+      ],
+      "not": "Kenarortay doğru ama üçgenin dik olduğu verilmedi; bu özellik yalnızca dik üçgende geçerlidir. Öğrenci koşulu hiç anmadan uyguladı → H3."
+    }
+  ]
+}

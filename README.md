@@ -107,7 +107,7 @@ Aynı test, doğrulayıcının `rendering` bloğunu okumadığını da doğrular
 
 ## Kapsam
 
-**İçinde:** üçgen · hesaplama tipi sorular · 9. sınıf üçgenler ünitesi ·
+**İçinde:** üçgen · hesaplama tipi sorular · 9–10. sınıf üçgenler kazanımları ·
 yapılandırılmış adım girişi · 3 hata sınıfı + hatasız
 
 **Dışında (ileri faz):** çember/çokgen · ispat tipi sorular · el yazısı tanıma ·
@@ -131,7 +131,7 @@ Bu fazda **hiçbir gerçek öğrenci verisi toplanmaz, işlenmez veya saklanmaz.
 ```
 docs/taksonomi.md          H0–H3 tanımları, karar kuralları — ORTAK SPESİFİKASYON
 schema/                    JSON şeması (figure / rendering / steps / label)
-src/theorems.py            9 teorem + ön koşulları
+src/theorems.py            10 teorem + ön koşulları
 src/generator.py           sentetik üreteç
 src/renderer.py            çizim motoru + bias
 src/verifier.py            sembolik doğrulayıcı
@@ -153,5 +153,13 @@ Dil modeli kolu için `.env` içine API anahtarı konur (`.gitignore`'dadır).
 
 ## Durum
 
-Faz 0 / Gün 1–2 — taksonomi, şema ve teorem kütüphanesi kuruldu.
-Üreteç, çizim motoru ve doğrulayıcı henüz yazılmadı.
+| Bileşen | Durum |
+|---|---|
+| Taksonomi, şema, teorem kütüphanesi | ✅ |
+| Problem şablonları (8 şablon, P1–P6) | ✅ |
+| Sentetik üreteç | ✅ 400 örnek, sınıflar dengeli |
+| Çizim motoru | ✅ `bias` + SVG |
+| Sembolik doğrulayıcı | ⬜ sırada |
+| LLM kolu (K1–K4), demo, değerlendirme | ⬜ |
+
+Derlem depoya alınmaz; `python src/generator.py` ile birebir yeniden üretilir.

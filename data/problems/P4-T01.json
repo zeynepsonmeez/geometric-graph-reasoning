@@ -1,7 +1,7 @@
 {
   "template_id": "P4-T01",
   "family": "P4",
-  "kazanim_kodu": null,
+  "kazanim_kodu": "MAT.9.3.1",
   "baslik": "Üçgen eşitsizliği ile üçüncü kenarın aralığı",
   "aciklama": "H3: iki kenar bilinmeden eşitsizlik uygulanır. H1: çizimde eşit görünen kenarlar eş sayılır.",
   "parametreler": {

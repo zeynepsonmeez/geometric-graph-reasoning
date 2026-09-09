@@ -5,7 +5,7 @@
 > birbirinden bağımsız olarak uygular. İkisi arasında **kod paylaşımı yasaktır**
 > (bkz. `tests/test_independence.py`). Ortak olan spesifikasyondur, kod değildir.
 
-Sürüm: 0.1 · Kapsam: 9. sınıf üçgenler ünitesi, hesaplama tipi problemler
+Sürüm: 0.2 · Kapsam: 9–10. sınıf üçgenler kazanımları, hesaplama tipi problemler
 
 ---
 
@@ -216,17 +216,55 @@ Her hata sınıfı **en az iki farklı aileden** beslenir. Bu bir zorunluluktur:
 tek aileye bağlı bir hata sınıfı olsaydı, model problem tipini tanıyarak hata
 sınıfını bilebilir, sınıf ile aile arasında yapay bir korelasyon oluşurdu.
 
-| # | Aile | Teoremler | Beslediği sınıflar | Kazanım kodu |
+| Şablon | Aile | Teoremler | Beslediği sınıflar | Kazanım |
 |---|---|---|---|---|
-| P1 | Üçgende açı hesabı | `ic_acilar_toplami`, `dis_aci` | H1, H3 | _TODO_ |
-| P2 | İkizkenar/eşkenarda açı ve kenar | `ikizkenar_taban`, `ic_acilar_toplami` | **H1**, H3 | _TODO_ |
-| P3 | Dik üçgende uzunluk | `pisagor` | **H1**, H3 | _TODO_ |
-| P4 | Üçgen eşitsizliği | `ucgen_esitsizligi` | H3 | _TODO_ |
-| P5 | Yardımcı elemanlar | `yukseklik`, `kenarortay`, `aciortay` | **H2**, H1 | _TODO_ |
-| P6 | Benzerlikle uzunluk hesabı | `benzerlik_orani` | H3, H2 | _TODO_ |
+| P1-T01 | Üçgende dış açı | `ic_acilar_toplami`, `dis_aci` | H1, H3 | `MAT.9.3.1` |
+| P2-T01 | İkizkenarda taban açıları | `ikizkenar_taban`, `ic_acilar_toplami` | **H1**, H3 | `MAT.9.3.1` |
+| P3-T01 | Dik üçgende Pisagor | `pisagor` | **H1**, H3 | `MAT.9.4.4` |
+| P3-T02 | Hipotenüse ait kenarortay | `hipotenus_kenarortay` | **H2**, H3 | `MAT.10.1.2` ⚠ |
+| P4-T01 | Üçgen eşitsizliği | `ucgen_esitsizligi` | H1, H3 | `MAT.9.3.1` |
+| P5-T01 | Yükseklik / kenarortay | `yukseklik`, `kenarortay` | **H2**, H1 | `MAT.10.1.2` ⚠ |
+| P5-T02 | Açıortay / kenarortay | `aciortay`, `kenarortay` | **H2**, H3 | `MAT.10.1.2` ⚠ |
+| P6-T01 | Benzerlik oranı | `benzerlik_orani` | H2, H3 | `MAT.9.4.2` |
 
-> **_TODO_ — Kazanım kodları MEB Ortaöğretim Matematik Dersi Öğretim Programı
-> belgesinden birebir alınacaktır. Hafızadan veya tahminle yazılmayacaktır.**
+Gerçekleşen dağılım: **H1 → 5 aile, H2 → 3 aile (P3, P5, P6), H3 → 6 aile.**
+
+### Müfredat kaynağı ve sürüm uyarısı
+
+Kodlar **Türkiye Yüzyılı Maarif Modeli** öğretim programından alınmıştır
+(tymm.meb.gov.tr). 2018 programındaki `9.4.x` kodları **geçersizdir**: Maarif
+Modeli 2025-2026'dan itibaren 9. sınıfta uygulanmaktadır ve 2026-2027'de de
+yürürlüktedir.
+
+İlgili öğrenme çıktıları:
+
+| Kod | Metin | Sınıf |
+|---|---|---|
+| `MAT.9.3.1` | Üçgende açı ve kenarla ilgili özellikleri, üçgenin açıları ve kenarları arasındaki ilişkileri doğrulayabilme veya ispatlayabilme | 9 |
+| `MAT.9.4.2` | İki üçgenin eş veya benzer olması için gerekli olan asgari koşullarla ilgili çıkarım yapabilme | 9 |
+| `MAT.9.4.4` | Tales, Öklid ve Pisagor teoremlerini ispatlayabilme | 9 |
+| `MAT.10.1.2` | Üçgenin yardımcı elemanlarının özellikleri ile ilgili çıkarım yapabilme | **10** |
+
+### Kapsam kararı: 9–10. sınıf
+
+Maarif Modeli'nde *üçgenin yardımcı elemanları* (yükseklik, kenarortay, açıortay)
+9. sınıfta **yer almamaktadır**; 10. sınıfa (`MAT.10.1.2`) taşınmıştır. H2
+sınıfının üç kaynağından ikisi (P3-T02, P5) bu çıktıya bağlıdır.
+
+**Karar: hizalama "9–10. sınıf üçgenler" olarak genişletilmiştir.**
+
+Gerekçe: yalnızca 9. sınıfta kalmak H2'yi tek kaynağa (P6) indirir ve sınıf ile
+problem ailesi arasında yapay korelasyon doğurur (§5 giriş). Bu, üç hata sınıfını
+dengeli biçimde ölçme olanağını ortadan kaldırır. Kapsamı bir sınıf genişletmenin
+maliyeti yalnızca ifade değişikliğidir; yardımcı elemanlar zaten üçgen
+geometrisinin ayrılmaz parçasıdır ve lise öğretim programının bütününde yer alır.
+
+Bildiride kullanılacak ifade: **"MEB Türkiye Yüzyılı Maarif Modeli 9 ve 10. sınıf
+matematik öğretim programı üçgenler kazanımları ile hizalanmıştır."**
+"9. sınıf ile hizalıdır" denmeyecektir.
+
+> Kodlar tymm.meb.gov.tr üzerinden alınmıştır; bildiriye girmeden önce öğretim
+> programının resmî PDF'inden ayrıca teyit edilmelidir.
 
 ---
 
