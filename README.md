@@ -122,6 +122,10 @@ gerçek öğrenci verisi (KVKK + etik kurul) · GNN
 | `data/synthetic/` | 400 | Üreteçten, dengeli dağılım |
 | `data/handwritten/` | 30 | **Ayrı tutulur.** Gerçekçilik denetimi + Cohen κ |
 
+Elle yazılan kümede etiketler çözüm dosyalarında **bulunmaz**; `labels/A1.json` ve
+`labels/A2.json` altında ayrı tutulur. Körlük böylece dosya düzeninin sonucu olur.
+Protokol: [`data/handwritten/README.md`](data/handwritten/README.md)
+
 Bu fazda **hiçbir gerçek öğrenci verisi toplanmaz, işlenmez veya saklanmaz.**
 
 ---
@@ -136,7 +140,9 @@ src/generator.py           sentetik üreteç
 src/renderer.py            çizim motoru + bias
 src/verifier.py            sembolik doğrulayıcı
 src/llm_checker.py         K1–K4 kolları
-eval/                      deney, taban çizgileri, kappa raporu
+src/handwritten.py         elle yazılan küme: iskelet, denetim, çizim
+eval/agreement.py          Cohen kappa + uyuşmazlık raporu
+eval/                      deney, taban çizgileri, sonuçlar
 ```
 
 ---

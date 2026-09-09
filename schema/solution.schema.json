@@ -15,8 +15,8 @@
   "properties": {
     "problem_id": {
       "type": "string",
-      "pattern": "^P[1-6]-[0-9]{4}$",
-      "description": "Problem ailesi ve sıra numarası, örn. P3-0012"
+      "pattern": "^(P[1-6]|EL)-[0-9]{4}$",
+      "description": "Sentetik: problem ailesi + sira no, orn. P3-0012. Elle yazilan kume: EL-0001. Onek, ornegin hangi kumeden geldigini ilk bakista gosterir."
     },
     "family": {
       "enum": [

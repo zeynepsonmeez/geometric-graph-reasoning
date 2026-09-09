@@ -1,0 +1,43 @@
+{
+  "_aciklama": "BICIM ORNEGIDIR — kumenin parcasi DEGILDIR. Yukleyici ORNEK- ile baslayan dosyalari atlar. Kendi orneklerinizi solutions/ altina EL-0001.json bicimiyle yazin.",
+
+  "problem_id": "EL-0000",
+  "family": "P3",
+  "kazanim_kodu": "MAT.9.4.4",
+  "soru": "KLM üçgeninde |KL| = 6 br ve |LM| = 8 br olarak verilmiştir. |KM| kaç birimdir?",
+
+  "figure": {
+    "points": ["K", "L", "M"],
+    "segments": [
+      { "from": "K", "to": "L", "type": "side", "length": 6 },
+      { "from": "L", "to": "M", "type": "side", "length": 8 },
+      { "from": "K", "to": "M", "type": "side", "length": null }
+    ],
+    "angles": [],
+    "perpendicular": [],
+    "congruent_segments": [],
+    "similar": []
+  },
+
+  "rendering": {
+    "bias": "misleading",
+    "note": "Şekil ölçekli değildir."
+  },
+
+  "steps": [
+    {
+      "id": "s1",
+      "claim": "m(L) = 90",
+      "rule": "verilen",
+      "depends_on": [],
+      "refs": { "asserts": "perpendicular", "vertex": "L" }
+    },
+    {
+      "id": "s2",
+      "claim": "|KM|^2 = 6^2 + 8^2 = 100, |KM| = 10",
+      "rule": "pisagor",
+      "depends_on": ["s1"],
+      "refs": { "vertex": "L" }
+    }
+  ]
+}
