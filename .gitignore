@@ -38,3 +38,6 @@ data/synthetic/*.json
 
 # LLM yanit onbellegi — yeniden calistirma ucret dogurmasin diye tutulur, depoya girmez
 eval/results/cache/
+
+# Yerel calistirma yapilandirmasi
+.claude/

@@ -155,6 +155,12 @@ pip install -r requirements.txt
 
 Dil modeli kolu için `.env` içine API anahtarı konur (`.gitignore`'dadır).
 
+```bash
+python src/generator.py                    # 400 ornek uret
+python eval/run_experiment.py --dry-run    # deneyi ucretsiz prova et
+streamlit run app.py                       # demo
+```
+
 ---
 
 ## Durum
@@ -165,7 +171,11 @@ Dil modeli kolu için `.env` içine API anahtarı konur (`.gitignore`'dadır).
 | Problem şablonları (8 şablon, P1–P6) | ✅ |
 | Sentetik üreteç | ✅ 400 örnek, sınıflar dengeli |
 | Çizim motoru | ✅ `bias` + SVG |
-| Sembolik doğrulayıcı | ⬜ sırada |
-| LLM kolu (K1–K4), demo, değerlendirme | ⬜ |
+| Sembolik doğrulayıcı | ✅ |
+| LLM kolu (K1–K4) | ✅ çevrimdışı test edildi |
+| Değerlendirme + taban çizgileri | ✅ |
+| Streamlit demosu | ✅ |
+| Elle yazılan 30 örnek | ⬜ **sende** |
+| K4 görsel kolu | ⬜ isteğe bağlı |
 
 Derlem depoya alınmaz; `python src/generator.py` ile birebir yeniden üretilir.
