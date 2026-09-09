@@ -61,7 +61,20 @@ Hata sınıflarının tanımlarını gönüllülere **verme** — verirsen sın�
 
 ## Bir örnek nasıl yazılır
 
-Boş dosya oluştur:
+**Önerilen yol — form arayüzü.** JSON düzenlemeye gerek yok:
+
+```bash
+streamlit run app.py
+```
+
+Sol menüden **Örnek yaz** sayfasını aç. Form şekli canlı çizer, eksikleri
+anında bildirir ve kaydederken koordinatları kendisi hesaplar.
+
+Etiketleme için aynı uygulamadaki **Etiketle** sayfasını kullan. Sayfa, seçili
+kodlayıcı dışındaki etiketleri ve doğrulayıcının teşhisini **göstermez** —
+körlük arayüz düzeyinde de korunur.
+
+Alternatif — boş dosya oluşturup elle doldurmak:
 
 ```bash
 python src/handwritten.py --new EL-0001
