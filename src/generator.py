@@ -305,7 +305,7 @@ def _sources_by_class(
 
 
 def generate(
-    total: int = 400,
+    total: int = 600,
     seed: int = 20260906,
     templates: list[pt.Template] | None = None,
 ) -> list[dict[str, Any]]:
@@ -378,7 +378,7 @@ def summarize(solutions: list[dict[str, Any]]) -> str:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Sentetik ornek uretici")
-    parser.add_argument("-n", "--total", type=int, default=400)
+    parser.add_argument("-n", "--total", type=int, default=600)
     parser.add_argument("-s", "--seed", type=int, default=20260906)
     parser.add_argument("--dry-run", action="store_true", help="dosyaya yazma")
     args = parser.parse_args()

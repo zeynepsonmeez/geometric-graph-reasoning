@@ -1,0 +1,170 @@
+{
+  "template_id": "P1-T02",
+  "family": "P1",
+  "kazanim_kodu": "MAT.9.3.1",
+  "baslik": "Dış açı verilmişken iç açı bulma",
+  "aciklama": "P1-T01'in tersi yon: dis aci verilir, ic aci sorulur. H3'te ogrenci dis aciyi komsu ic aciyla iliskilendirir; H1'de verilmemis bir aciyi cizimden okur.",
+  "parametreler": {
+    "V": {
+      "tip": "vertex_triple"
+    },
+    "d": {
+      "tip": "int",
+      "min": 100,
+      "max": 160,
+      "adim": 5
+    },
+    "a": {
+      "tip": "int",
+      "min": 30,
+      "max": 70
+    }
+  },
+  "kisitlar": [
+    "a < d"
+  ],
+  "figure_base": {
+    "points": [
+      "{V0}",
+      "{V1}",
+      "{V2}"
+    ],
+    "segments": [
+      {
+        "from": "{V0}",
+        "to": "{V1}",
+        "type": "side",
+        "length": null
+      },
+      {
+        "from": "{V1}",
+        "to": "{V2}",
+        "type": "side",
+        "length": null
+      },
+      {
+        "from": "{V0}",
+        "to": "{V2}",
+        "type": "side",
+        "length": null
+      }
+    ],
+    "angles": [
+      {
+        "vertex": "{V0}",
+        "value": "{a}"
+      },
+      {
+        "vertex": "{V1}",
+        "value": null
+      },
+      {
+        "vertex": "{V2}",
+        "value": null
+      }
+    ],
+    "perpendicular": [],
+    "congruent_segments": [],
+    "similar": []
+  },
+  "varyantlar": [
+    {
+      "sinif": "H0",
+      "hatali_adim": null,
+      "bias": "neutral",
+      "soru": "{V0}{V1}{V2} üçgeninde {V2} köşesindeki dış açının ölçüsü {d}° ve m({V0}) = {a}° verilmiştir. m({V1}) kaç derecedir?",
+      "steps": [
+        {
+          "id": "s1",
+          "claim": "m({V0}) + m({V1}) = {d}",
+          "rule": "dis_aci",
+          "depends_on": [],
+          "refs": {
+            "exterior": "{V2}",
+            "remote": [
+              "{V0}",
+              "{V1}"
+            ]
+          }
+        },
+        {
+          "id": "s2",
+          "claim": "m({V1}) = {d} - {a}",
+          "rule": "dis_aci",
+          "depends_on": [
+            "s1"
+          ],
+          "refs": {
+            "exterior": "{V2}",
+            "remote": [
+              "{V0}",
+              "{V1}"
+            ]
+          }
+        }
+      ],
+      "not": "Dış açı, komşu olmayan iki iç açının ({V0} ve {V1}) toplamına eşittir."
+    },
+    {
+      "sinif": "H3",
+      "hatali_adim": "s1",
+      "bias": "neutral",
+      "soru": "{V0}{V1}{V2} üçgeninde {V2} köşesindeki dış açının ölçüsü {d}° ve m({V0}) = {a}° verilmiştir. m({V1}) kaç derecedir?",
+      "steps": [
+        {
+          "id": "s1",
+          "claim": "m({V0}) + m({V2}) = {d}",
+          "rule": "dis_aci",
+          "depends_on": [],
+          "refs": {
+            "exterior": "{V2}",
+            "remote": [
+              "{V0}",
+              "{V2}"
+            ]
+          }
+        },
+        {
+          "id": "s2",
+          "claim": "m({V1}) = 180 - {d}",
+          "rule": "ic_acilar_toplami",
+          "depends_on": [
+            "s1"
+          ]
+        }
+      ],
+      "not": "Öğrenci dış açıyı KENDİ köşesinin iç açısıyla topladı; oysa komşu OLMAYAN iki iç açı alınır. Ön koşul sağlanmadı → H3."
+    },
+    {
+      "sinif": "H1",
+      "hatali_adim": "s1",
+      "bias": "misleading",
+      "soru": "{V0}{V1}{V2} üçgeninde m({V0}) = {a}° verilmiştir. m({V1}) kaç derecedir?",
+      "steps": [
+        {
+          "id": "s1",
+          "claim": "m({V2}) = 90",
+          "rule": "verilen",
+          "depends_on": [],
+          "refs": {
+            "asserts": "perpendicular",
+            "vertex": "{V2}"
+          }
+        },
+        {
+          "id": "s2",
+          "claim": "m({V1}) = 180 - {a} - 90",
+          "rule": "ic_acilar_toplami",
+          "depends_on": [
+            "s1"
+          ]
+        }
+      ],
+      "not": "figure.perpendicular boş; öğrenci çizimde dik görünen açıyı 'verilen' diye iddia etti → H1.",
+      "cizim_ipucu": {
+        "tip": "dik_aci",
+        "kose": "{V2}"
+      }
+    }
+  ]
+}

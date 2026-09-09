@@ -1,0 +1,187 @@
+{
+  "template_id": "P2-T02",
+  "family": "P2",
+  "kazanim_kodu": "MAT.9.3.1",
+  "baslik": "İkizkenar üçgende taban açısından tepe açısına",
+  "aciklama": "P2-T01'in tersi yon: taban acisi verilir, tepe acisi sorulur. Ayni yanilgilar farkli adim yapisinda gorunur.",
+  "parametreler": {
+    "V": {
+      "tip": "vertex_triple"
+    },
+    "t": {
+      "tip": "int",
+      "min": 40,
+      "max": 75
+    },
+    "x": {
+      "tip": "int",
+      "min": 5,
+      "max": 12
+    },
+    "y": {
+      "tip": "int",
+      "min": 6,
+      "max": 14
+    }
+  },
+  "kisitlar": [
+    "x != y"
+  ],
+  "figure_base": {
+    "points": [
+      "{V0}",
+      "{V1}",
+      "{V2}"
+    ],
+    "segments": [
+      {
+        "from": "{V0}",
+        "to": "{V1}",
+        "type": "side",
+        "length": null
+      },
+      {
+        "from": "{V1}",
+        "to": "{V2}",
+        "type": "side",
+        "length": null
+      },
+      {
+        "from": "{V0}",
+        "to": "{V2}",
+        "type": "side",
+        "length": null
+      }
+    ],
+    "angles": [
+      {
+        "vertex": "{V0}",
+        "value": null
+      },
+      {
+        "vertex": "{V1}",
+        "value": "{t}"
+      },
+      {
+        "vertex": "{V2}",
+        "value": null
+      }
+    ],
+    "perpendicular": [],
+    "congruent_segments": [
+      [
+        "{V0}{V1}",
+        "{V0}{V2}"
+      ]
+    ],
+    "similar": []
+  },
+  "varyantlar": [
+    {
+      "sinif": "H0",
+      "hatali_adim": null,
+      "bias": "neutral",
+      "soru": "{V0}{V1}{V2} ikizkenar üçgeninde |{V0}{V1}| = |{V0}{V2}| ve m({V1}) = {t}° verilmiştir. m({V0}) kaç derecedir?",
+      "steps": [
+        {
+          "id": "s1",
+          "claim": "m({V2}) = m({V1}) = {t}",
+          "rule": "ikizkenar_taban",
+          "depends_on": []
+        },
+        {
+          "id": "s2",
+          "claim": "m({V0}) = 180 - 2·{t}",
+          "rule": "ic_acilar_toplami",
+          "depends_on": [
+            "s1"
+          ]
+        }
+      ],
+      "not": "congruent_segments verilmiş; ikizkenar_taban ön koşulu sağlanıyor."
+    },
+    {
+      "sinif": "H3",
+      "hatali_adim": "s1",
+      "bias": "neutral",
+      "soru": "{V0}{V1}{V2} üçgeninde |{V0}{V1}| = {x} br, |{V0}{V2}| = {y} br ve m({V1}) = {t}° verilmiştir. m({V0}) kaç derecedir?",
+      "figure_override": {
+        "segments": [
+          {
+            "from": "{V0}",
+            "to": "{V1}",
+            "type": "side",
+            "length": "{x}"
+          },
+          {
+            "from": "{V0}",
+            "to": "{V2}",
+            "type": "side",
+            "length": "{y}"
+          },
+          {
+            "from": "{V1}",
+            "to": "{V2}",
+            "type": "side",
+            "length": null
+          }
+        ],
+        "congruent_segments": []
+      },
+      "steps": [
+        {
+          "id": "s1",
+          "claim": "m({V2}) = m({V1}) = {t}",
+          "rule": "ikizkenar_taban",
+          "depends_on": []
+        },
+        {
+          "id": "s2",
+          "claim": "m({V0}) = 180 - 2·{t}",
+          "rule": "ic_acilar_toplami",
+          "depends_on": [
+            "s1"
+          ]
+        }
+      ],
+      "not": "Kenarlar {x} ve {y}, eş değil; öğrenci ikizkenarlığı hiç anmadan taban açıları özelliğini uyguladı → H3."
+    },
+    {
+      "sinif": "H1",
+      "hatali_adim": "s1",
+      "bias": "misleading",
+      "soru": "{V0}{V1}{V2} üçgeninde m({V1}) = {t}° verilmiştir. m({V0}) kaç derecedir?",
+      "figure_override": {
+        "congruent_segments": []
+      },
+      "steps": [
+        {
+          "id": "s1",
+          "claim": "|{V0}{V1}| = |{V0}{V2}|",
+          "rule": "verilen",
+          "depends_on": [],
+          "refs": {
+            "asserts": "congruent_segments",
+            "segments": [
+              "{V0}{V1}",
+              "{V0}{V2}"
+            ]
+          }
+        },
+        {
+          "id": "s2",
+          "claim": "m({V0}) = 180 - 2·{t}",
+          "rule": "ikizkenar_taban",
+          "depends_on": [
+            "s1"
+          ]
+        }
+      ],
+      "not": "congruent_segments boş; öğrenci çizimde eşit görünen kenarları 'verilen' diye iddia etti → H1.",
+      "cizim_ipucu": {
+        "tip": "ikizkenar",
+        "tepe": "{V0}"
+      }
+    }
+  ]
+}

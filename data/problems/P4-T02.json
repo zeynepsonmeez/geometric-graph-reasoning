@@ -1,0 +1,179 @@
+{
+  "template_id": "P4-T02",
+  "family": "P4",
+  "kazanim_kodu": "MAT.9.3.1",
+  "baslik": "Üçgen eşitsizliği: üçüncü kenarın en büyük tam sayı değeri",
+  "aciklama": "P4-T01 araligi sorar, bu sablon aralikten tam sayi sonucu cikarmayi ister. H3'te iki kenar bilinmeden uygulanir; H1'de eksik kenar cizimden esit sayilir.",
+  "parametreler": {
+    "V": {
+      "tip": "vertex_triple"
+    },
+    "a": {
+      "tip": "int",
+      "min": 6,
+      "max": 14
+    },
+    "b": {
+      "tip": "int",
+      "min": 7,
+      "max": 19
+    }
+  },
+  "kisitlar": [
+    "a != b"
+  ],
+  "figure_base": {
+    "points": [
+      "{V0}",
+      "{V1}",
+      "{V2}"
+    ],
+    "segments": [
+      {
+        "from": "{V0}",
+        "to": "{V1}",
+        "type": "side",
+        "length": "{a}"
+      },
+      {
+        "from": "{V1}",
+        "to": "{V2}",
+        "type": "side",
+        "length": "{b}"
+      },
+      {
+        "from": "{V0}",
+        "to": "{V2}",
+        "type": "side",
+        "length": null
+      }
+    ],
+    "angles": [],
+    "perpendicular": [],
+    "congruent_segments": [],
+    "similar": []
+  },
+  "varyantlar": [
+    {
+      "sinif": "H0",
+      "hatali_adim": null,
+      "bias": "neutral",
+      "soru": "{V0}{V1}{V2} üçgeninde |{V0}{V1}| = {a} br ve |{V1}{V2}| = {b} br verilmiştir. |{V0}{V2}| bir tam sayı ise en büyük değeri kaçtır?",
+      "steps": [
+        {
+          "id": "s1",
+          "claim": "|{b} - {a}| < |{V0}{V2}| < {a} + {b}",
+          "rule": "ucgen_esitsizligi",
+          "depends_on": []
+        },
+        {
+          "id": "s2",
+          "claim": "en büyük tam sayı = {a} + {b} - 1",
+          "rule": "ucgen_esitsizligi",
+          "depends_on": [
+            "s1"
+          ]
+        }
+      ],
+      "not": "İki kenar da verilmiş; ucgen_esitsizligi ön koşulu sağlanıyor."
+    },
+    {
+      "sinif": "H3",
+      "hatali_adim": "s1",
+      "bias": "neutral",
+      "soru": "{V0}{V1}{V2} üçgeninde |{V0}{V1}| = {a} br verilmiştir. |{V0}{V2}| bir tam sayı ise en büyük değeri kaçtır?",
+      "figure_override": {
+        "segments": [
+          {
+            "from": "{V0}",
+            "to": "{V1}",
+            "type": "side",
+            "length": "{a}"
+          },
+          {
+            "from": "{V1}",
+            "to": "{V2}",
+            "type": "side",
+            "length": null
+          },
+          {
+            "from": "{V0}",
+            "to": "{V2}",
+            "type": "side",
+            "length": null
+          }
+        ]
+      },
+      "steps": [
+        {
+          "id": "s1",
+          "claim": "0 < |{V0}{V2}| < 2·{a}",
+          "rule": "ucgen_esitsizligi",
+          "depends_on": []
+        },
+        {
+          "id": "s2",
+          "claim": "en büyük tam sayı = 2·{a} - 1",
+          "rule": "ucgen_esitsizligi",
+          "depends_on": [
+            "s1"
+          ]
+        }
+      ],
+      "not": "Yalnızca bir kenar verilmiş; eşitsizlik iki kenarın bilinmesini gerektirir. Ön koşul sağlanmadan uygulandı → H3."
+    },
+    {
+      "sinif": "H1",
+      "hatali_adim": "s1",
+      "bias": "misleading",
+      "soru": "{V0}{V1}{V2} üçgeninde |{V0}{V1}| = {a} br verilmiştir. |{V0}{V2}| bir tam sayı ise en büyük değeri kaçtır?",
+      "figure_override": {
+        "segments": [
+          {
+            "from": "{V0}",
+            "to": "{V1}",
+            "type": "side",
+            "length": "{a}"
+          },
+          {
+            "from": "{V1}",
+            "to": "{V2}",
+            "type": "side",
+            "length": null
+          },
+          {
+            "from": "{V0}",
+            "to": "{V2}",
+            "type": "side",
+            "length": null
+          }
+        ]
+      },
+      "steps": [
+        {
+          "id": "s1",
+          "claim": "|{V1}{V2}| = {a}",
+          "rule": "verilen",
+          "depends_on": [],
+          "refs": {
+            "asserts": "length",
+            "segment": "{V1}{V2}"
+          }
+        },
+        {
+          "id": "s2",
+          "claim": "en büyük tam sayı = 2·{a} - 1",
+          "rule": "ucgen_esitsizligi",
+          "depends_on": [
+            "s1"
+          ]
+        }
+      ],
+      "not": "İkinci kenarın uzunluğu verilenler arasında yok; öğrenci çizimde eşit görünen kenarı 'verilen' saydı → H1.",
+      "cizim_ipucu": {
+        "tip": "ikizkenar",
+        "tepe": "{V1}"
+      }
+    }
+  ]
+}

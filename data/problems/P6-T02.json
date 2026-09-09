@@ -1,0 +1,209 @@
+{
+  "template_id": "P6-T02",
+  "family": "P6",
+  "kazanim_kodu": "MAT.9.4.2",
+  "baslik": "Benzerlik oranını iki karşılıklı kenardan bulma",
+  "aciklama": "P6-T01 orani verir, bu sablon orani ogrenciye buldurur. H2'de oran dogru bulunur ama ikinci adimda karsilikli kenarlar yanlis eslestirilir.",
+  "parametreler": {
+    "W": {
+      "tip": "vertex_sextuple"
+    },
+    "a": {
+      "tip": "int",
+      "min": 3,
+      "max": 8
+    },
+    "b": {
+      "tip": "int",
+      "min": 4,
+      "max": 11
+    },
+    "k": {
+      "tip": "int",
+      "min": 2,
+      "max": 4
+    }
+  },
+  "kisitlar": [
+    "a != b"
+  ],
+  "figure_base": {
+    "points": [
+      "{W0}",
+      "{W1}",
+      "{W2}",
+      "{W3}",
+      "{W4}",
+      "{W5}"
+    ],
+    "segments": [
+      {
+        "from": "{W0}",
+        "to": "{W1}",
+        "type": "side",
+        "length": "{a}"
+      },
+      {
+        "from": "{W1}",
+        "to": "{W2}",
+        "type": "side",
+        "length": "{b}"
+      },
+      {
+        "from": "{W0}",
+        "to": "{W2}",
+        "type": "side",
+        "length": null
+      },
+      {
+        "from": "{W3}",
+        "to": "{W4}",
+        "type": "side",
+        "length": null
+      },
+      {
+        "from": "{W4}",
+        "to": "{W5}",
+        "type": "side",
+        "length": null
+      },
+      {
+        "from": "{W3}",
+        "to": "{W5}",
+        "type": "side",
+        "length": null
+      }
+    ],
+    "angles": [],
+    "perpendicular": [],
+    "congruent_segments": [],
+    "similar": [
+      [
+        "{W0}{W1}{W2}",
+        "{W3}{W4}{W5}"
+      ]
+    ]
+  },
+  "varyantlar": [
+    {
+      "sinif": "H0",
+      "hatali_adim": null,
+      "bias": "neutral",
+      "soru": "{W0}{W1}{W2} ~ {W3}{W4}{W5} olmak üzere |{W0}{W1}| = {a} br, |{W3}{W4}| = {k}·{a} br ve |{W1}{W2}| = {b} br verilmiştir. |{W4}{W5}| kaç birimdir?",
+      "steps": [
+        {
+          "id": "s1",
+          "claim": "k = |{W3}{W4}| / |{W0}{W1}| = {k}",
+          "rule": "benzerlik_orani",
+          "depends_on": [],
+          "refs": {
+            "maps": [
+              [
+                "{W0}{W1}",
+                "{W3}{W4}"
+              ]
+            ]
+          }
+        },
+        {
+          "id": "s2",
+          "claim": "|{W4}{W5}| = {k} · {b}",
+          "rule": "benzerlik_orani",
+          "depends_on": [
+            "s1"
+          ],
+          "refs": {
+            "maps": [
+              [
+                "{W1}{W2}",
+                "{W4}{W5}"
+              ]
+            ]
+          }
+        }
+      ],
+      "not": "Benzerlik verilmiş ve iki eşleme de köşe sırasına uygun."
+    },
+    {
+      "sinif": "H2",
+      "hatali_adim": "s2",
+      "bias": "neutral",
+      "soru": "{W0}{W1}{W2} ~ {W3}{W4}{W5} olmak üzere |{W0}{W1}| = {a} br, |{W3}{W4}| = {k}·{a} br ve |{W1}{W2}| = {b} br verilmiştir. |{W4}{W5}| kaç birimdir?",
+      "steps": [
+        {
+          "id": "s1",
+          "claim": "k = |{W3}{W4}| / |{W0}{W1}| = {k}",
+          "rule": "benzerlik_orani",
+          "depends_on": [],
+          "refs": {
+            "maps": [
+              [
+                "{W0}{W1}",
+                "{W3}{W4}"
+              ]
+            ]
+          }
+        },
+        {
+          "id": "s2",
+          "claim": "|{W4}{W5}| = {k} · {a}",
+          "rule": "benzerlik_orani",
+          "depends_on": [
+            "s1"
+          ],
+          "refs": {
+            "maps": [
+              [
+                "{W0}{W1}",
+                "{W4}{W5}"
+              ]
+            ]
+          }
+        }
+      ],
+      "not": "Oran doğru bulundu ama {W4}{W5}'in karşılığı {W1}{W2}'dir, {W0}{W1} değil. Karşılıklı kenarlar yanlış eşleştirilmiş → H2."
+    },
+    {
+      "sinif": "H3",
+      "hatali_adim": "s1",
+      "bias": "neutral",
+      "soru": "{W0}{W1}{W2} ve {W3}{W4}{W5} üçgenlerinde |{W0}{W1}| = {a} br, |{W3}{W4}| = {k}·{a} br ve |{W1}{W2}| = {b} br verilmiştir. |{W4}{W5}| kaç birimdir?",
+      "figure_override": {
+        "similar": []
+      },
+      "steps": [
+        {
+          "id": "s1",
+          "claim": "k = |{W3}{W4}| / |{W0}{W1}| = {k}",
+          "rule": "benzerlik_orani",
+          "depends_on": [],
+          "refs": {
+            "maps": [
+              [
+                "{W0}{W1}",
+                "{W3}{W4}"
+              ]
+            ]
+          }
+        },
+        {
+          "id": "s2",
+          "claim": "|{W4}{W5}| = {k} · {b}",
+          "rule": "benzerlik_orani",
+          "depends_on": [
+            "s1"
+          ],
+          "refs": {
+            "maps": [
+              [
+                "{W1}{W2}",
+                "{W4}{W5}"
+              ]
+            ]
+          }
+        }
+      ],
+      "not": "figure.similar boş; iki kenarın oranı eşit diye üçgenler benzer olmaz. Benzerlik verilmeden orantı kuruldu → H3."
+    }
+  ]
+}
