@@ -26,6 +26,7 @@ sys.path.insert(0, str(ROOT / "src"))
 
 import handwritten as hw  # noqa: E402
 import renderer  # noqa: E402
+import ui  # noqa: E402
 import visualize as viz  # noqa: E402
 
 SINIFLAR = {
@@ -36,6 +37,7 @@ SINIFLAR = {
 }
 
 st.set_page_config(page_title="Etiketle", layout="wide")
+ui.apply_theme()
 st.title("Elle yazılan küme — etiketleme")
 
 cozumler = hw.load_solutions()

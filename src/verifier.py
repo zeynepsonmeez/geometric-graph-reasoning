@@ -215,7 +215,8 @@ def _check_given(figure: dict[str, Any], refs: dict[str, Any]) -> tuple[bool, st
     if asserts == "congruent_segments":
         pair = refs.get("segments")
         ok = _has_congruent_sides(figure, pair)
-        return ok, f"{pair} kenarlarının eşliği verilenler arasında yok."
+        adlar = " ile ".join(f"|{p}|" for p in pair) if pair else "kenarların"
+        return ok, f"{adlar} eşitliği verilenler arasında yok."
 
     if asserts == "similar":
         ok = _has_similar(figure)

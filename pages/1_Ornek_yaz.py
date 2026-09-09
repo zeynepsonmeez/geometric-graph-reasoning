@@ -23,6 +23,7 @@ sys.path.insert(0, str(ROOT / "src"))
 
 import handwritten as hw  # noqa: E402
 import renderer  # noqa: E402
+import ui  # noqa: E402
 import theorems  # noqa: E402
 
 KURALLAR = ["verilen", *sorted(theorems.THEOREMS)]
@@ -30,6 +31,7 @@ ASSERT_SECENEKLERI = ["perpendicular", "congruent_segments", "similar", "length"
 SEGMENT_TIPLERI = ["side", "altitude", "median", "bisector"]
 
 st.set_page_config(page_title="Örnek yaz", layout="wide")
+ui.apply_theme()
 st.title("Elle yazılan küme — örnek girişi")
 
 st.info(

@@ -300,11 +300,11 @@ def layout(
 # --------------------------------------------------------------------------
 
 _SVG_STYLE = (
-    "font-family:'Segoe UI',Arial,sans-serif;font-size:11px"
+    "font-family:'Segoe UI',Arial,sans-serif;font-size:13px"
 )
 
 
-def _label_offset(p: Point, center: Point, d: float = 14.0) -> Point:
+def _label_offset(p: Point, center: Point, d: float = 17.0) -> Point:
     """Etiketi şeklin merkezinden dışarı doğru kaydırır."""
     dx, dy = p[0] - center[0], p[1] - center[1]
     n = math.hypot(dx, dy) or 1.0
@@ -315,11 +315,15 @@ def to_svg(
     figure: dict[str, Any],
     coords: dict[str, list[float]],
     note: str = "Şekil ölçekli değildir.",
+    scale: float = 1.0,
 ) -> str:
     """Şekli SVG olarak çizer.
 
     Uzunluk ve açı etiketleri verilenlerden yazılır; koordinatlardan ÖLÇÜLMEZ.
     Bu ayrım kasıtlıdır: etiket doğruyu söyler, çizim söylemez.
+
+    `scale` yalnızca çıktı boyutunu büyütür; viewBox ve dolayısıyla geometri
+    değişmez. Sunumda uzaktan okunabilmesi için arayüz bunu 2 civarında kullanır.
     """
     segments = figure.get("segments", [])
     pts = {k: (v[0], v[1]) for k, v in coords.items()}
@@ -337,13 +341,14 @@ def to_svg(
     out: list[str] = [
         f'<svg xmlns="http://www.w3.org/2000/svg" '
         f'viewBox="{min_x:.1f} {min_y:.1f} {width:.1f} {height:.1f}" '
-        f'width="{width:.0f}" height="{height:.0f}" style="{_SVG_STYLE}">'
+        f'width="{width * scale:.0f}" height="{height * scale:.0f}" '
+        f'style="{_SVG_STYLE}">'
     ]
 
     # Üçgen yüzeyleri
     for triangle in _find_triangles(list(figure.get("points", [])), segments):
         poly = " ".join(f"{pts[p][0]:.1f},{pts[p][1]:.1f}" for p in triangle if p in pts)
-        out.append(f'<polygon points="{poly}" fill="#e8eef7" stroke="none"/>')
+        out.append(f'<polygon points="{poly}" fill="#dde6f4" stroke="none"/>')
 
     # Kenarlar
     dash = {"altitude": "5,3", "median": "5,3", "bisector": "2,3"}
@@ -358,7 +363,7 @@ def to_svg(
         out.append(
             f'<line x1="{pts[a][0]:.1f}" y1="{pts[a][1]:.1f}" '
             f'x2="{pts[b][0]:.1f}" y2="{pts[b][1]:.1f}" '
-            f'stroke="{stroke}" stroke-width="1.8"{extra}/>'
+            f'stroke="{stroke}" stroke-width="2.6"{extra}/>'
         )
 
         # Uzunluk etiketi — VERİLENDEN yazılır, çizimden ölçülmez
@@ -366,8 +371,8 @@ def to_svg(
             mx, my = _midpoint(pts[a], pts[b])
             lx, ly = _label_offset((mx, my), center, 11.0)
             out.append(
-                f'<text x="{lx:.1f}" y="{ly:.1f}" fill="#5b6472" '
-                f'text-anchor="middle">{seg["length"]}</text>'
+                f'<text x="{lx:.1f}" y="{ly:.1f}" fill="#3d4757" font-size="13.5" '
+                f'font-weight="600" text-anchor="middle">{seg["length"]}</text>'
             )
 
     # Verilen dik açı işaretleri (yalnızca figure.perpendicular'dakiler)
@@ -376,17 +381,17 @@ def to_svg(
             continue
         x, y = pts[vertex]
         out.append(
-            f'<rect x="{x - 1:.1f}" y="{y - 11:.1f}" width="11" height="11" '
-            f'fill="none" stroke="#22345e" stroke-width="1.3"/>'
+            f'<rect x="{x - 1:.1f}" y="{y - 14:.1f}" width="14" height="14" '
+            f'fill="none" stroke="#22345e" stroke-width="2"/>'
         )
 
     # Noktalar ve adları
     for name, (x, y) in pts.items():
-        out.append(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="2.6" fill="#22345e"/>')
+        out.append(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="3.4" fill="#22345e"/>')
         lx, ly = _label_offset((x, y), center)
         out.append(
             f'<text x="{lx:.1f}" y="{ly:.1f}" fill="#22345e" font-weight="700" '
-            f'text-anchor="middle">{name}</text>'
+            f'font-size="15" text-anchor="middle">{name}</text>'
         )
 
     # Açı etiketleri
@@ -397,8 +402,8 @@ def to_svg(
         x, y = pts[vertex]
         ix, iy = _label_offset((x, y), center, -19.0)
         out.append(
-            f'<text x="{ix:.1f}" y="{iy:.1f}" fill="#9a6100" '
-            f'text-anchor="middle">{value}°</text>'
+            f'<text x="{ix:.1f}" y="{iy:.1f}" fill="#9a6100" font-size="13.5" '
+            f'font-weight="600" text-anchor="middle">{value}°</text>'
         )
 
     out.append(

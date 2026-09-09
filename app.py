@@ -1,14 +1,16 @@
 """Streamlit demosu.
 
-Amacı staj sunumunda ve danışman görüşmesinde sistemi canlı göstermektir;
-ürünleşmiş bir uygulama hedeflenmemektedir.
+Amacı staj sunumunda ve danışman görüşmesinde sistemi canlı göstermektir.
+
+Düzen kararları:
+  - Kontroller kenar çubuğunda; ana alan yalnızca içerik gösterir.
+  - Sonuç kartı sayfanın en baskın öğesidir — projenin çıktısı "yanlış" değil,
+    konumu belli bir teşhistir.
+  - Şekiller büyük çizilir; sunumda uzaktan okunabilmeleri gerekir.
 
 Anlatının iki can alıcı anı:
-
-  1. Aynı problem, iki farklı yanılgı → sistem ikisini FARKLI teşhis eder ve
-     farklı adımı işaretler. "Neden nihai cevaba bakmak yetmez" sorusunun cevabı.
-  2. Aynı verilenler, iki farklı çizim → yanıltıcı çizimde izleyici dik açı
-     varsayar. H1 sınıfının varlık sebebi tek bakışta görülür.
+  1. Aynı problem, iki farklı yanılgı → farklı teşhis, farklı adım.
+  2. Aynı verilenler, iki farklı çizim → yanıltıcı olanda izleyici tuzağa düşer.
 
 Çalıştırma:
     streamlit run app.py
@@ -29,19 +31,19 @@ sys.path.insert(0, str(ROOT / "src"))
 import generator as gen  # noqa: E402
 import renderer  # noqa: E402
 import theorems  # noqa: E402
+import ui  # noqa: E402
 import verifier as vf  # noqa: E402
 import visualize as viz  # noqa: E402
 
-SINIF_ADI = {
-    "H0": "Hatasız",
-    "H1": "Şekle Aşırı Güvenme",
-    "H2": "Tanım Karıştırma",
-    "H3": "Teoremi Ön Koşulsuz Uygulama",
-}
-
 KURAL_SECENEKLERI = ["verilen", *sorted(theorems.THEOREMS)]
+SEKIL_OLCEK = 2.0
 
-st.set_page_config(page_title="Geometrik Akıl Yürütme Hata Analizi", layout="wide")
+st.set_page_config(
+    page_title="Geometrik Akıl Yürütme Hata Analizi",
+    layout="wide",
+    initial_sidebar_state="expanded",
+)
+ui.apply_theme()
 
 
 @st.cache_data
@@ -49,18 +51,7 @@ def ornekleri_yukle(n: int = 400):
     return gen.generate(total=n, seed=20260906)
 
 
-def sekli_goster(solution: dict, baslik: str | None = None) -> None:
-    if baslik:
-        st.caption(baslik)
-    svg = renderer.to_svg(
-        solution["figure"],
-        solution["rendering"]["coords"],
-        solution["rendering"].get("note", "Şekil ölçekli değildir."),
-    )
-    st.image(svg, use_container_width=False)
-
-
-def verilenleri_goster(figure: dict) -> None:
+def verilen_satirlari(figure: dict) -> tuple[list[str], list[str]]:
     satirlar = []
     for seg in figure.get("segments", []):
         tip = {"altitude": "yükseklik", "median": "kenarortay", "bisector": "açıortay"}.get(
@@ -80,128 +71,141 @@ def verilenleri_goster(figure: dict) -> None:
     for c in figure.get("similar", []):
         satirlar.append(f"{c[0]} ~ {c[1]}")
 
-    st.markdown("**Verilenler**")
-    st.markdown("\n".join(f"- {s}" for s in satirlar) or "- (verilen yok)")
-
     eksikler = []
     if not figure.get("perpendicular"):
         eksikler.append("diklik")
     if not figure.get("congruent_segments"):
         eksikler.append("kenar eşliği")
-    if eksikler:
-        st.caption(f"Verilmeyen: {', '.join(eksikler)} — çizimde öyle görünse de.")
+    return satirlar, eksikler
 
 
-def sonucu_goster(bulgu: vf.Finding) -> None:
-    if bulgu.is_clean:
-        st.success(f"**H0 — {SINIF_ADI['H0']}**\n\n{bulgu.reason}")
-        return
-
-    st.error(
-        f"**{bulgu.error_class} — {SINIF_ADI[bulgu.error_class]}**\n\n"
-        f"Hatalı adım: **{bulgu.error_step}**\n\n{bulgu.reason}"
+def sekli_ciz(solution: dict, olcek: float = SEKIL_OLCEK) -> None:
+    ui.sekil(
+        renderer.to_svg(
+            solution["figure"],
+            solution["rendering"]["coords"],
+            solution["rendering"].get("note", "Şekil ölçekli değildir."),
+            scale=olcek,
+        )
     )
 
 
 # --------------------------------------------------------------------------
 
-st.title("Geometrik Akıl Yürütme Hata Analizi")
-st.caption(
+ui.baslik(
+    "Geometrik Akıl Yürütme Hata Analizi",
     "Üçgen geometrisinde öğrenci çözümlerini iki graf olarak modelleyip hatayı "
-    "adım düzeyinde konumlandırır."
+    "<b>adım düzeyinde</b> konumlandırır.",
 )
 
 sekme1, sekme2, sekme3 = st.tabs(
-    ["Çözüm analizi", "Aynı problem, iki yanılgı", "Çizim nasıl yanıltır?"]
+    ["  Çözüm analizi  ", "  Aynı problem, iki yanılgı  ", "  Çizim nasıl yanıltır?  "]
 )
 
 
 # --------------------------------------------------------------------------
-# 1) Çözüm analizi — adımlar düzenlenebilir
+# 1) Çözüm analizi
 # --------------------------------------------------------------------------
 
 with sekme1:
     ornekler = ornekleri_yukle()
 
-    ust = st.columns([2, 1, 1])
-    with ust[0]:
+    with st.sidebar:
+        st.markdown("### Örnek seçimi")
         aile = st.selectbox(
             "Problem ailesi",
             ["hepsi", "P1", "P2", "P3", "P4", "P5", "P6"],
             help="P1 açı · P2 ikizkenar · P3 dik üçgen · P4 eşitsizlik · "
             "P5 yardımcı elemanlar · P6 benzerlik",
         )
-    havuz = [s for s in ornekler if aile == "hepsi" or s["family"] == aile]
 
-    with ust[1]:
-        sinif_f = st.selectbox("Beklenen sınıf", ["hepsi", "H0", "H1", "H2", "H3"])
-    if sinif_f != "hepsi":
-        havuz = [s for s in havuz if s["label"]["error_class"] == sinif_f]
+        aile_havuzu = [s for s in ornekler if aile == "hepsi" or s["family"] == aile]
 
-    if not havuz:
-        st.warning("Bu filtreyle örnek yok.")
-        st.stop()
+        # Sınıf seçenekleri seçili aileye göre daraltılır: her aile her sınıfı
+        # beslemez (P4'te H2 yoktur). Olmayan kombinasyonu seçtirmek, kullanıcıyı
+        # boş ekrana götürür.
+        var_olanlar = sorted({s["label"]["error_class"] for s in aile_havuzu})
+        sinif_f = st.selectbox("Beklenen sınıf", ["hepsi", *var_olanlar])
 
-    with ust[2]:
-        idx = st.number_input("Örnek", 0, len(havuz) - 1, 0, help=f"{len(havuz)} örnek")
+        havuz = [
+            s
+            for s in aile_havuzu
+            if sinif_f == "hepsi" or s["label"]["error_class"] == sinif_f
+        ]
 
-    secilen = havuz[int(idx)]
-    anahtar = secilen["problem_id"] + str(idx) + aile + sinif_f
-    if st.session_state.get("_anahtar") != anahtar:
-        st.session_state["_anahtar"] = anahtar
-        st.session_state["adimlar"] = copy.deepcopy(secilen["steps"])
+        idx = st.number_input("Örnek", 0, max(len(havuz) - 1, 0), 0) if havuz else 0
+        st.caption(f"{len(havuz)} örnek eşleşti")
 
-    sol, sag = st.columns([1, 1])
+        eksik = sorted({"H0", "H1", "H2", "H3"} - set(var_olanlar))
+        if eksik and aile != "hepsi":
+            st.caption(f"{aile} ailesi şu sınıfları beslemiyor: {', '.join(eksik)}")
 
-    with sol:
-        st.subheader("Problem")
-        st.info(secilen["soru"])
-        sekli_goster(secilen)
-        verilenleri_goster(secilen["figure"])
+        st.divider()
+        st.caption(
+            "Ana ekrandan adımların **gerekçesini** değiştirip teşhisin nasıl "
+            "değiştiğini görebilirsin."
+        )
 
-        st.subheader("Çözüm adımları")
-        st.caption("Gerekçeyi değiştirip sistemin teşhisinin nasıl değiştiğini görebilirsin.")
+    secilen = havuz[int(idx)] if havuz else None
 
-        for i, adim in enumerate(st.session_state["adimlar"]):
-            c1, c2 = st.columns([3, 2])
-            with c1:
-                st.text_input(
-                    f"{adim['id']} — iddia", adim["claim"], key=f"claim_{i}", disabled=True
-                )
-            with c2:
-                yeni = st.selectbox(
-                    "gerekçe",
+    if secilen is None:
+        # st.stop() KULLANILMAZ: betigi tumuyle durdurur ve diger sekmeler de
+        # bosalir. Bos sonuc yalnizca bu sekmeyi etkilemelidir.
+        st.warning("Bu filtreyle örnek yok. Kenar çubuğundan filtreleri gevşet.")
+    else:
+        anahtar = f"{secilen['problem_id']}|{idx}|{aile}|{sinif_f}"
+        if st.session_state.get("_anahtar") != anahtar:
+            st.session_state["_anahtar"] = anahtar
+            st.session_state["adimlar"] = copy.deepcopy(secilen["steps"])
+
+        bulgu = vf.verify(secilen["figure"], st.session_state["adimlar"])
+
+        # Teşhis en üstte, tam genişlikte
+        ui.sonuc_karti(bulgu.error_class, bulgu.error_step, bulgu.reason)
+
+        sol, orta, sag = st.columns([1.05, 0.95, 0.8])
+
+        with sol:
+            ui.bolum("Problem")
+            st.markdown(f"**{secilen['soru']}**")
+            st.write("")
+            sekli_ciz(secilen)
+            st.write("")
+            satirlar, eksikler = verilen_satirlari(secilen["figure"])
+            ui.verilenler_karti(satirlar, eksikler)
+
+        with orta:
+            ui.bolum("Çözüm adımları")
+            for i, adim in enumerate(st.session_state["adimlar"]):
+                ui.adim_satiri(adim, adim["id"] == bulgu.error_step)
+                yeni_kural = st.selectbox(
+                    f"{adim['id']} gerekçesi",
                     KURAL_SECENEKLERI,
                     index=KURAL_SECENEKLERI.index(adim["rule"])
                     if adim["rule"] in KURAL_SECENEKLERI
                     else 0,
                     key=f"rule_{i}",
+                    label_visibility="collapsed",
                 )
-                st.session_state["adimlar"][i]["rule"] = yeni
+                st.session_state["adimlar"][i]["rule"] = yeni_kural
 
-    with sag:
-        st.subheader("Analiz")
-        bulgu = vf.verify(secilen["figure"], st.session_state["adimlar"])
-        sonucu_goster(bulgu)
-
-        st.markdown("**Akıl yürütme grafı**")
-        st.image(
-            viz.reasoning_graph_svg(st.session_state["adimlar"], bulgu.error_step),
-            use_container_width=False,
-        )
-        st.markdown(viz.legend_html(), unsafe_allow_html=True)
-
-        with st.expander("Üretecin etiketi (yalnızca doğrulama için)"):
-            etiket = secilen["label"]
-            st.write(
-                f"Sınıf: `{etiket['error_class']}` · "
-                f"Adım: `{etiket['error_step']}` · "
-                f"Çizim: `{secilen['rendering']['bias']}`"
+        with sag:
+            ui.bolum("Akıl yürütme grafı")
+            st.markdown(
+                viz.reasoning_graph_svg(
+                    st.session_state["adimlar"], bulgu.error_step, width=290
+                ),
+                unsafe_allow_html=True,
             )
-            st.caption(
-                "Bu bilgi doğrulayıcıya verilmez; yalnızca demoda karşılaştırma için "
-                "gösterilir."
-            )
+            st.markdown(viz.legend_html(), unsafe_allow_html=True)
+            st.write("")
+            with st.expander("Üretecin etiketi"):
+                etiket = secilen["label"]
+                st.markdown(
+                    f"Sınıf `{etiket['error_class']}` · adım `{etiket['error_step']}` · "
+                    f"çizim `{secilen['rendering']['bias']}`"
+                )
+                st.caption("Doğrulayıcıya verilmez; yalnızca karşılaştırma için.")
 
 
 # --------------------------------------------------------------------------
@@ -209,46 +213,43 @@ with sekme1:
 # --------------------------------------------------------------------------
 
 with sekme2:
-    st.subheader("Neden nihai cevaba bakmak yetmez?")
+    ui.bolum("Neden nihai cevaba bakmak yetmez?")
     st.markdown(
-        "Aşağıdaki iki çözüm **aynı probleme** ait ve ikisi de yanlış. Ama "
+        "Aşağıdaki iki çözüm **aynı problem ailesinden** ve ikisi de yanlış. Ama "
         "yanılgılar farklı, dolayısıyla öğretmenin müdahalesi de farklı olmalı. "
         "Sistem ikisini farklı teşhis eder ve **farklı adımı** işaretler."
     )
 
     ornekler = ornekleri_yukle()
-    ciftler = {}
+    ciftler: dict[str, dict[str, dict]] = {}
     for s in ornekler:
-        if s["label"]["error_class"] in ("H1", "H3"):
-            ciftler.setdefault(s["family"], {}).setdefault(
-                s["label"]["error_class"], s
-            )
+        sinif = s["label"]["error_class"]
+        if sinif in ("H1", "H3"):
+            ciftler.setdefault(s["family"], {}).setdefault(sinif, s)
     uygun = [f for f, d in ciftler.items() if len(d) == 2]
 
     if not uygun:
         st.warning("Uygun çift bulunamadı.")
     else:
-        aile2 = st.selectbox("Problem ailesi", uygun, key="cift_aile")
-        kolonlar = st.columns(2)
+        aile2 = st.radio("Problem ailesi", uygun, horizontal=True, key="cift_aile")
+        st.write("")
+        kolonlar = st.columns(2, gap="large")
         for kol, sinif in zip(kolonlar, ("H1", "H3")):
             ornek = ciftler[aile2][sinif]
             with kol:
-                st.markdown(f"#### {sinif} — {SINIF_ADI[sinif]}")
-                st.info(ornek["soru"])
-                sekli_goster(ornek)
+                b = vf.verify(ornek["figure"], ornek["steps"])
+                ui.sonuc_karti(b.error_class, b.error_step, b.reason)
+                st.markdown(f"**{ornek['soru']}**")
+                st.write("")
+                sekli_ciz(ornek, olcek=1.7)
+                st.write("")
                 for adim in ornek["steps"]:
-                    st.markdown(f"`{adim['id']}` {adim['claim']} — *{adim['rule']}*")
-                bulgu = vf.verify(ornek["figure"], ornek["steps"])
-                sonucu_goster(bulgu)
-                st.image(
-                    viz.reasoning_graph_svg(ornek["steps"], bulgu.error_step, width=280),
-                    use_container_width=False,
-                )
+                    ui.adim_satiri(adim, adim["id"] == b.error_step)
 
         st.info(
             "**Ayrım kuralı:** Öğrenci eksik koşulu ayrı bir adımda *verilen* diye "
-            "iddia ettiyse H1, hiç anmadan teoremi uyguladıysa H3. Aynı eksik "
-            "verilen, iki farklı yanılgı."
+            "iddia ettiyse **H1**, hiç anmadan teoremi uyguladıysa **H3**. "
+            "Aynı eksik verilen, iki farklı yanılgı."
         )
 
 
@@ -257,10 +258,10 @@ with sekme2:
 # --------------------------------------------------------------------------
 
 with sekme3:
-    st.subheader("Ders kitabı şekilleri ölçekli değildir")
+    ui.bolum("Ders kitabı şekilleri ölçekli değildir")
     st.markdown(
         "Aşağıdaki iki çizimin **verilenleri birebir aynı** ve hiçbiri yalan "
-        "söylemiyor — çünkü o açı zaten *verilmemiş*. Fark yalnızca verilmemiş "
+        "söylemiyor — çünkü o bilgi zaten *verilmemiş*. Fark yalnızca verilmemiş "
         "niceliğin nasıl seçildiğinde."
     )
 
@@ -272,29 +273,30 @@ with sekme3:
     ]
 
     def tuzak_metni(solution: dict) -> tuple[str, str]:
-        """Tuzağı örnekten okur.
+        """Tuzağı örnekten okur; metin sabit yazılamaz.
 
-        Metin sabit yazılamaz: bazı örneklerde tuzak diklik, bazılarında kenar
-        eşliğidir. Yanlış metin, doğru çizimin anlatısını bozar.
+        Bazı örneklerde tuzak diklik, bazılarında kenar eşliğidir. Yanlış metin
+        doğru çizimin anlatısını bozar.
         """
         adim = next((a for a in solution["steps"] if a["rule"] == "verilen"), None)
         refs = (adim or {}).get("refs", {})
-
         if refs.get("asserts") == "perpendicular":
-            k = refs.get("vertex", "?")
-            return f"{k} köşesinin dik olup olmadığını", "dik açı"
+            return f"{refs.get('vertex', '?')} köşesinin dik olup olmadığını", "dik açı"
         if refs.get("asserts") == "congruent_segments":
             a, b = refs.get("segments", ["?", "?"])
             return f"|{a}| ile |{b}| kenarlarının eşit olup olmadığını", "eşit kenar"
         if refs.get("asserts") == "length":
-            return f"{refs.get('segment', '?')} uzunluğunun verilip verilmediğini", "verilen uzunluk"
+            return (
+                f"{refs.get('segment', '?')} uzunluğunun verilip verilmediğini",
+                "verilen uzunluk",
+            )
         return "şekilden ne okunabileceğini", "verilmemiş bir ilişki"
 
     if not adaylar:
         st.warning("Uygun örnek bulunamadı.")
     else:
-        tuzak_turleri = {tuzak_metni(s)[1] for s in adaylar}
-        tur = st.selectbox("Tuzak türü", sorted(tuzak_turleri), key="tuzak_tur")
+        turler = sorted({tuzak_metni(s)[1] for s in adaylar})
+        tur = st.radio("Tuzak türü", turler, horizontal=True, key="tuzak_tur")
         aday = next(s for s in adaylar if tuzak_metni(s)[1] == tur)
         soru_metni, tuzak_adi = tuzak_metni(aday)
 
@@ -303,24 +305,33 @@ with sekme3:
             notr["figure"], "neutral", None, random.Random(7)
         )
 
-        k1, k2 = st.columns(2)
+        st.write("")
+        st.markdown(f"**{aday['soru']}**")
+        st.write("")
+
+        k1, k2 = st.columns(2, gap="large")
         with k1:
-            st.markdown("#### Yanıltıcı çizim")
-            sekli_goster(aday)
+            st.markdown("##### Yanıltıcı çizim")
+            sekli_ciz(aday, olcek=2.1)
             st.error(f"İzleyicilerin çoğu burada **{tuzak_adi}** olduğunu söyler.")
         with k2:
-            st.markdown("#### Nötr çizim")
-            sekli_goster(notr)
+            st.markdown("##### Nötr çizim")
+            sekli_ciz(notr, olcek=2.1)
             st.success(f"Burada kimse {tuzak_adi} varsaymaz.")
 
-        st.info(
-            f"**Sunum önerisi:** Soldaki şekli göster ve dinleyicilere "
-            f"**{soru_metni}** sor. Çoğunluk *evet* der. Sonra verilenler listesini "
-            f"aç — o bilgi yok. H1 sınıfının varlık sebebi budur."
-        )
-        verilenleri_goster(aday["figure"])
-
-        st.markdown("**Öğrencinin çözümü**")
-        for adim in aday["steps"]:
-            st.markdown(f"`{adim['id']}` {adim['claim']} — *{adim['rule']}*")
-        sonucu_goster(vf.verify(aday["figure"], aday["steps"]))
+        st.write("")
+        alt1, alt2 = st.columns([1.2, 1])
+        with alt1:
+            st.info(
+                f"**Sunum önerisi:** Soldaki şekli göster ve dinleyicilere "
+                f"**{soru_metni}** sor. Çoğunluk *evet* der. Sonra verilenler "
+                f"listesini aç — o bilgi yok."
+            )
+            b = vf.verify(aday["figure"], aday["steps"])
+            ui.sonuc_karti(b.error_class, b.error_step, b.reason)
+        with alt2:
+            satirlar, eksikler = verilen_satirlari(aday["figure"])
+            ui.verilenler_karti(satirlar, eksikler)
+            st.write("")
+            for adim in aday["steps"]:
+                ui.adim_satiri(adim, adim["id"] == b.error_step)
