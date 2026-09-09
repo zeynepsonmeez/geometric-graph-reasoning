@@ -84,7 +84,14 @@
           "id": "s2",
           "claim": "dis({V2}) = {a} + {b}",
           "rule": "dis_aci",
-          "depends_on": []
+          "depends_on": [],
+          "refs": {
+            "exterior": "{V2}",
+            "remote": [
+              "{V0}",
+              "{V1}"
+            ]
+          }
         }
       ],
       "not": "Dış açı, komşu olmayan iki iç açının ({V0} ve {V1}) toplamıdır. s1 doğru ama sonuca katkısız dolgu adımıdır."
@@ -107,7 +114,14 @@
           "rule": "dis_aci",
           "depends_on": [
             "s1"
-          ]
+          ],
+          "refs": {
+            "exterior": "{V2}",
+            "remote": [
+              "{V0}",
+              "{V2}"
+            ]
+          }
         }
       ],
       "not": "Öğrenci {V2}'nin KENDİ iç açısını topladı; oysa dış açı komşu OLMAYAN iki iç açının toplamıdır. Ön koşul (doğru açı çifti) sağlanmadı → H3."
@@ -138,7 +152,11 @@
           "id": "s1",
           "claim": "m({V1}) = 90",
           "rule": "verilen",
-          "depends_on": []
+          "depends_on": [],
+          "refs": {
+            "asserts": "perpendicular",
+            "vertex": "{V1}"
+          }
         },
         {
           "id": "s2",

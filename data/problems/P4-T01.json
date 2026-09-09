@@ -138,7 +138,11 @@
           "id": "s1",
           "claim": "|{V1}{V2}| = {a}",
           "rule": "verilen",
-          "depends_on": []
+          "depends_on": [],
+          "refs": {
+            "asserts": "length",
+            "segment": "{V1}{V2}"
+          }
         },
         {
           "id": "s2",

@@ -65,7 +65,10 @@
           "id": "s1",
           "claim": "m({V0}H{V1}) = 90",
           "rule": "yukseklik",
-          "depends_on": []
+          "depends_on": [],
+          "refs": {
+            "segment": "{V0}H"
+          }
         }
       ],
       "not": "Segment tipi 'altitude'; yukseklik teoreminin ön koşulu sağlanıyor."
@@ -80,7 +83,10 @@
           "id": "s1",
           "claim": "|{V1}H| = |H{V2}| = {m}/2",
           "rule": "kenarortay",
-          "depends_on": []
+          "depends_on": [],
+          "refs": {
+            "segment": "{V0}H"
+          }
         }
       ],
       "not": "kenarortay teoremi type=='median' gerektirir; [{V0}H] ise 'altitude'. Kenar tipi yanlış eşleştirilmiş → taksonomi §4.3 gereği H2.",
@@ -99,7 +105,14 @@
           "id": "s1",
           "claim": "|{V0}{V1}| = |{V0}{V2}|",
           "rule": "verilen",
-          "depends_on": []
+          "depends_on": [],
+          "refs": {
+            "asserts": "congruent_segments",
+            "segments": [
+              "{V0}{V1}",
+              "{V0}{V2}"
+            ]
+          }
         },
         {
           "id": "s2",

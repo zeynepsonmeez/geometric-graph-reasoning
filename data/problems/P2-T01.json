@@ -160,7 +160,14 @@
           "id": "s1",
           "claim": "|{V0}{V1}| = |{V0}{V2}|",
           "rule": "verilen",
-          "depends_on": []
+          "depends_on": [],
+          "refs": {
+            "asserts": "congruent_segments",
+            "segments": [
+              "{V0}{V1}",
+              "{V0}{V2}"
+            ]
+          }
         },
         {
           "id": "s2",

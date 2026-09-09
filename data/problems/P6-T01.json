@@ -95,7 +95,15 @@
           "id": "s1",
           "claim": "|{W3}{W4}| / |{W0}{W1}| = {k}",
           "rule": "benzerlik_orani",
-          "depends_on": []
+          "depends_on": [],
+          "refs": {
+            "maps": [
+              [
+                "{W0}{W1}",
+                "{W3}{W4}"
+              ]
+            ]
+          }
         },
         {
           "id": "s2",
@@ -103,7 +111,15 @@
           "rule": "benzerlik_orani",
           "depends_on": [
             "s1"
-          ]
+          ],
+          "refs": {
+            "maps": [
+              [
+                "{W0}{W1}",
+                "{W3}{W4}"
+              ]
+            ]
+          }
         }
       ],
       "not": "Benzerlik verilmiş ve kenarlar doğru eşleştirilmiş: {W0}{W1} ile {W3}{W4} karşılıklıdır."
@@ -121,7 +137,15 @@
           "id": "s1",
           "claim": "|{W3}{W4}| / |{W0}{W1}| = {k}",
           "rule": "benzerlik_orani",
-          "depends_on": []
+          "depends_on": [],
+          "refs": {
+            "maps": [
+              [
+                "{W0}{W1}",
+                "{W3}{W4}"
+              ]
+            ]
+          }
         },
         {
           "id": "s2",
@@ -129,7 +153,15 @@
           "rule": "benzerlik_orani",
           "depends_on": [
             "s1"
-          ]
+          ],
+          "refs": {
+            "maps": [
+              [
+                "{W0}{W1}",
+                "{W3}{W4}"
+              ]
+            ]
+          }
         }
       ],
       "not": "figure.similar boş; benzerlik verilmeden orantı kuruldu. Ön koşul sağlanmadı → H3."
@@ -144,7 +176,15 @@
           "id": "s1",
           "claim": "|{W3}{W4}| / |{W0}{W1}| = {k}",
           "rule": "benzerlik_orani",
-          "depends_on": []
+          "depends_on": [],
+          "refs": {
+            "maps": [
+              [
+                "{W0}{W1}",
+                "{W3}{W4}"
+              ]
+            ]
+          }
         },
         {
           "id": "s2",
@@ -152,7 +192,15 @@
           "rule": "benzerlik_orani",
           "depends_on": [
             "s1"
-          ]
+          ],
+          "refs": {
+            "maps": [
+              [
+                "{W1}{W2}",
+                "{W3}{W4}"
+              ]
+            ]
+          }
         }
       ],
       "not": "Benzerlik doğru, oran doğru; ancak {W3}{W4}'ün karşılığı {W0}{W1}'dir, {W1}{W2} değil. Karşılıklı kenarlar yanlış eşleştirilmiş → taksonomi §4.3 gereği H2."

@@ -84,7 +84,11 @@
           "id": "s1",
           "claim": "m({V1}) = 90",
           "rule": "verilen",
-          "depends_on": []
+          "depends_on": [],
+          "refs": {
+            "asserts": "perpendicular",
+            "vertex": "{V1}"
+          }
         },
         {
           "id": "s2",

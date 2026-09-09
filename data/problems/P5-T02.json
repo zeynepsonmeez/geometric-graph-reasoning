@@ -84,7 +84,10 @@
           "id": "s1",
           "claim": "m({V1}{V0}D) = {a}/2",
           "rule": "aciortay",
-          "depends_on": []
+          "depends_on": [],
+          "refs": {
+            "segment": "{V0}D"
+          }
         }
       ],
       "not": "Segment tipi 'bisector'; aciortay teoreminin ön koşulu sağlanıyor."
@@ -99,7 +102,10 @@
           "id": "s1",
           "claim": "|{V1}D| = |D{V2}| = {m}/2",
           "rule": "kenarortay",
-          "depends_on": []
+          "depends_on": [],
+          "refs": {
+            "segment": "{V0}D"
+          }
         }
       ],
       "not": "kenarortay teoremi type=='median' gerektirir; [{V0}D] ise 'bisector'. Açıortay açıyı böler, kenarı değil → taksonomi §4.3 gereği H2.",
@@ -118,7 +124,10 @@
           "id": "s1",
           "claim": "m({V1}{V0}D) = {a}/2",
           "rule": "aciortay",
-          "depends_on": []
+          "depends_on": [],
+          "refs": {
+            "segment": "{V0}D"
+          }
         },
         {
           "id": "s2",

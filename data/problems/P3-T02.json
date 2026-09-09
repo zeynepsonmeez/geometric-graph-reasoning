@@ -67,7 +67,11 @@
           "id": "s1",
           "claim": "|{V1}N| = {c}/2",
           "rule": "hipotenus_kenarortay",
-          "depends_on": []
+          "depends_on": [],
+          "refs": {
+            "segment": "{V1}N",
+            "vertex": "{V1}"
+          }
         }
       ],
       "not": "Diklik verilmiş ve [{V1}N] gerçekten kenarortay; her iki ön koşul da sağlanıyor."
@@ -110,7 +114,11 @@
           "id": "s1",
           "claim": "|{V1}N| = {c}/2",
           "rule": "hipotenus_kenarortay",
-          "depends_on": []
+          "depends_on": [],
+          "refs": {
+            "segment": "{V1}N",
+            "vertex": "{V1}"
+          }
         }
       ],
       "not": "hipotenus_kenarortay teoremi type=='median' gerektirir; [{V1}N] ise 'altitude'. Hipotenüse ait yükseklik ile kenarortay karıştırılmış → taksonomi §4.3 gereği H2."
@@ -128,7 +136,11 @@
           "id": "s1",
           "claim": "|{V1}N| = {c}/2",
           "rule": "hipotenus_kenarortay",
-          "depends_on": []
+          "depends_on": [],
+          "refs": {
+            "segment": "{V1}N",
+            "vertex": "{V1}"
+          }
         }
       ],
       "not": "Kenarortay doğru ama üçgenin dik olduğu verilmedi; bu özellik yalnızca dik üçgende geçerlidir. Öğrenci koşulu hiç anmadan uyguladı → H3."

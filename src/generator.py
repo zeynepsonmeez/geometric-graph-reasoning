@@ -200,12 +200,9 @@ def _insert_filler(
 
     remap = {old["id"]: f"s{i + 1}" for i, old in enumerate(yeni)}
     renumbered = [
-        {
-            "id": remap[s["id"]],
-            "claim": s["claim"],
-            "rule": s["rule"],
-            "depends_on": [remap[d] for d in s["depends_on"]],
-        }
+        # Adımın diğer alanları (özellikle `refs`) korunur; yalnızca kimlikler
+        # yeniden numaralanır. refs düşerse doğrulayıcı iddiayı denetleyemez.
+        {**s, "id": remap[s["id"]], "depends_on": [remap[d] for d in s["depends_on"]]}
         for s in yeni
     ]
     return renumbered, (remap[hatali_adim] if hatali_adim else None)
