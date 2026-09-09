@@ -59,6 +59,29 @@ Hata sınıflarının tanımlarını gönüllülere **verme** — verirsen sın�
 
 ---
 
+## Gönüllülere problem föyü
+
+Gönüllünün en çok takıldığı yer "hangi problemi yazayım?" sorusudur. Föy bunu
+çözer — 30 problem, altı aileye dengeli dağılmış, yazdırılabilir:
+
+```bash
+python src/worksheet.py -n 30
+```
+
+`data/handwritten/foy.html` oluşur; tarayıcıda açıp yazdırabilirsin. Her problem
+soruyu, şekli ve verilenler listesini içerir; altında çözümün yazılacağı boş
+satırlar vardır.
+
+Föy **hata sınıflarını, çözüm adımlarını ve hangi hatanın beklendiğini
+içermez**. Gönüllü problemi görür, çözümü kendi yazar, hata yapıp yapmayacağına
+kendi karar verir. Sınıf dağılımı böylece kendiliğinden oluşur.
+
+Verilenleri eksik olan problemler bilinçli olarak **yanıltıcı çizimle** gelir:
+çözülemeyen bir soruyu nötr çizimle vermek gönüllüye kusurlu soru vermek olurdu.
+Ders kitabının bu durumda yaptığı da şekli tuzaklı çizmektir.
+
+---
+
 ## Bir örnek nasıl yazılır
 
 **Önerilen yol — form arayüzü.** JSON düzenlemeye gerek yok:

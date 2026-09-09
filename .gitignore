@@ -41,3 +41,7 @@ eval/results/cache/
 
 # Yerel calistirma yapilandirmasi
 .claude/
+
+# Uretilen foy — seed ile yeniden uretilir
+data/handwritten/foy.html
+data/handwritten/foy.md

@@ -141,6 +141,7 @@ src/renderer.py            çizim motoru + bias
 src/verifier.py            sembolik doğrulayıcı
 src/llm_checker.py         K1–K4 kolları
 src/handwritten.py         elle yazılan küme: iskelet, denetim, çizim
+src/worksheet.py           gönüllüler için problem föyü
 eval/agreement.py          Cohen kappa + uyuşmazlık raporu
 eval/                      deney, taban çizgileri, sonuçlar
 ```
