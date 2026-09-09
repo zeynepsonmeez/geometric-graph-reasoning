@@ -40,23 +40,43 @@ VERTEX_POOL: list[tuple[str, str, str]] = [
     ("K", "N", "P"), ("L", "R", "T"),
 ]
 
-def _make_filler(figure: dict[str, Any]) -> dict[str, str] | None:
-    """Sonuca katkısız ama GEÇERLİ bir ara adım üretir.
+#: Her üçgende koşulsuz geçerli olan dolgu iddiaları.
+#: Metinleri farklıdır ki aynı çözümde birden çok dolgu tekrar gibi görünmesin.
+FILLER_SABLONLARI = (
+    "m({a}) + m({b}) + m({c}) = 180",
+    "m({a}) = 180 - m({b}) - m({c})",
+    "m({b}) + m({c}) = 180 - m({a})",
+)
 
-    Zincir uzunluğunun ipucu olmasını engeller ve hatalı adımın konumunu kaydırır.
+
+def _make_fillers(
+    figure: dict[str, Any], count: int, rng: random.Random
+) -> list[dict[str, str]]:
+    """Sonuca katkısız ama GEÇERLİ ara adımlar üretir.
+
     Köşe adları şeklin kendisinden okunur; yer tutucu adları şablondan şablona
     değiştiği için (V0.. / W0..) sabit kodlanamaz.
+
+    `ic_acilar_toplami` ön koşulsuz geçerlidir, dolayısıyla bu adımlar çözümün
+    geçerliliğini değiştirmez — yalnızca zinciri uzatır.
     """
     triangles = renderer._find_triangles(
         list(figure.get("points", [])), figure.get("segments", [])
     )
-    if not triangles:
-        return None
+    if not triangles or count <= 0:
+        return []
+
     a, b, c = triangles[0]
-    return {
-        "claim": f"m({a}) + m({b}) + m({c}) = 180",
-        "rule": "ic_acilar_toplami",
-    }
+    sablonlar = list(FILLER_SABLONLARI)
+    rng.shuffle(sablonlar)
+
+    return [
+        {
+            "claim": sablonlar[i % len(sablonlar)].format(a=a, b=b, c=c),
+            "rule": "ic_acilar_toplami",
+        }
+        for i in range(count)
+    ]
 
 PLACEHOLDER_ONLY = re.compile(r"^\{([A-Za-z][A-Za-z0-9_]*)\}$")
 
@@ -179,24 +199,43 @@ def _merge_figure(base: dict[str, Any], override: dict[str, Any]) -> dict[str, A
     return figure
 
 
-def _insert_filler(
+#: Hata içeren çözümlerde en az bu kadar adım bulunur.
+#:
+#: Tek adımlı bir çözümde hatalı adımı rastgele tahmin etmek HER ZAMAN doğrudur;
+#: iki adımlıda %50. M3'ün ayırt edici olabilmesi için zincirin uzaması gerekir.
+#: Bu eşik doğrudan taban çizgisi ölçümünden çıkmıştır (eval/baselines.py).
+MIN_HATALI_ADIM = 3
+MAX_ADIM = 5
+
+
+def _pad_steps(
     steps: list[dict[str, Any]],
     hatali_adim: str | None,
     figure: dict[str, Any],
+    rng: random.Random,
 ) -> tuple[list[dict[str, Any]], str | None]:
-    """Adımların ÖNÜNE geçerli bir dolgu adımı ekler ve id'leri yeniden numaralar.
+    """Zinciri dolgu adımlarıyla uzatır ve id'leri yeniden numaralar.
 
-    Amaç hatanın konumunu dolaştırmaktır: hata hep 1. adımda olursa M3 metriği
-    anlamsızlaşır (docs/taksonomi.md §7).
+    Dolgular **rastgele konumlara** serpiştirilir. Hep başa eklenseydi hatalı
+    adım sistematik olarak sona kayar ve konum yine tahmin edilebilir olurdu
+    (docs/taksonomi.md §7).
+
+    Dolgular ön koşulsuz geçerli olduğu ve hiçbir adıma bağlanmadığı için
+    araya girmeleri çözümün geçerliliğini ve ilk geçersiz adımı değiştirmez.
     """
-    if len(steps) >= 4:
+    hedef = min(MAX_ADIM, max(MIN_HATALI_ADIM, len(steps)) + rng.randint(0, 1))
+    eksik = hedef - len(steps)
+    fillers = _make_fillers(figure, eksik, rng)
+    if not fillers:
         return steps, hatali_adim
 
-    filler = _make_filler(figure)
-    if filler is None:
-        return steps, hatali_adim
-
-    yeni = [{"id": "_f", "claim": filler["claim"], "rule": filler["rule"], "depends_on": []}, *steps]
+    yeni = list(steps)
+    for i, filler in enumerate(fillers):
+        konum = rng.randint(0, len(yeni))
+        yeni.insert(
+            konum,
+            {"id": f"_f{i}", "claim": filler["claim"], "rule": filler["rule"], "depends_on": []},
+        )
 
     remap = {old["id"]: f"s{i + 1}" for i, old in enumerate(yeni)}
     renumbered = [
@@ -221,9 +260,10 @@ def build(
     steps = _subst(variant.steps, values)
     hatali_adim = _subst(variant.hatali_adim, values) if variant.hatali_adim else None
 
-    # Dolgu adımı, hatanın konumunu dolaştırmak için yaklaşık yarı yarıya eklenir
-    if rng.random() < 0.5:
-        steps, hatali_adim = _insert_filler(steps, hatali_adim, figure)
+    # Hata içeren çözümlerin zinciri uzatılır; hatasız olanlarda zorunlu değil.
+    # H0'ı da bazen uzatmak, adım sayısının sınıf ipucu olmasını engeller.
+    if hatali_adim is not None or rng.random() < 0.5:
+        steps, hatali_adim = _pad_steps(steps, hatali_adim, figure, rng)
 
     hint = _subst(variant.cizim_ipucu, values) if variant.cizim_ipucu else None
     coords = renderer.layout(figure, variant.bias, hint, rng)
