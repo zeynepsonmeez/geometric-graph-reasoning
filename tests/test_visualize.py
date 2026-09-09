@@ -86,6 +86,83 @@ def test_gercek_orneklerle_calisir() -> None:
             assert f">{bulgu.error_step} ✗<" in svg
 
 
+# --------------------------------------------------------------------------
+# Çift graf — projenin tezini tek görselde anlatan öğe
+# --------------------------------------------------------------------------
+
+
+def _cift(sinif: str):
+    import renderer
+
+    sol = next(
+        s for s in gen.generate(total=300, seed=555)
+        if s["label"]["error_class"] == sinif
+    )
+    bulgu = vf.verify_solution(sol)
+    fsvg = renderer.to_svg(
+        sol["figure"], sol["rendering"]["coords"], sol["rendering"]["note"]
+    )
+    return sol, bulgu, viz.dual_graph_svg(
+        sol["figure"], fsvg, sol["steps"], bulgu.error_step, bulgu.error_class
+    )
+
+
+def test_cift_graf_iki_paneli_de_etiketler() -> None:
+    _, _, svg = _cift("H1")
+    assert "ŞEKİL GRAFI" in svg and "AKIL YÜRÜTME GRAFI" in svg
+    assert "ne verildi?" in svg and "nasıl ilerledi?" in svg
+
+
+def test_cift_graf_sekli_gomer() -> None:
+    """Cizim motorunun ciktisi yeniden uretilmez, ic ice SVG olarak gomulur."""
+    sol, _, svg = _cift("H1")
+    assert svg.count("<svg") == 2, "sekil gomulu degil"
+    for nokta in sol["figure"]["points"]:
+        assert f">{nokta}<" in svg
+
+
+def test_tutarsizlik_rozeti_hata_sinifina_gore_degisir() -> None:
+    for sinif, beklenen in viz.EKSIK_METNI.items():
+        _, bulgu, svg = _cift(sinif)
+        assert bulgu.error_class == sinif
+        assert beklenen in svg, f"{sinif}: '{beklenen}' rozeti yok"
+
+
+def test_hatasiz_cozumde_rozet_yok() -> None:
+    _, bulgu, svg = _cift("H0")
+    assert bulgu.is_clean
+    for metin in viz.EKSIK_METNI.values():
+        assert metin not in svg
+
+
+def test_rozet_adim_kutusuyla_cakismaz() -> None:
+    """Rozet kutunun SAGINDA durmali.
+
+    Ustune konsaydi adimlar arasi bagimlilik okunu orterdi; sol panele
+    konsaydi iki ucgenli sekillerin ustune binerdi.
+    """
+    import re
+
+    for sinif in ("H1", "H2", "H3"):
+        _, _, svg = _cift(sinif)
+        # Adım kutuları rx="7", rozet rx="12" ile çizilir; ayrım buradan yapılır
+        kutular = [
+            float(m.group(1))
+            for m in re.finditer(r'<rect x="([\d.]+)"[^>]*\srx="7"', svg)
+        ]
+        rozetler = [
+            float(m.group(1))
+            for m in re.finditer(r'<rect x="([\d.]+)"[^>]*\srx="12"', svg)
+        ]
+        assert kutular and rozetler, f"{sinif}: kutu veya rozet bulunamadi"
+        assert min(rozetler) > max(kutular), f"{sinif}: rozet kutularin solunda"
+
+
+def test_cift_graf_bos_adimda_patlamaz() -> None:
+    svg = viz.dual_graph_svg({"points": [], "segments": []}, "<svg></svg>", [])
+    assert svg.startswith("<svg") and svg.endswith("</svg>")
+
+
 def test_app_modulu_derlenir() -> None:
     """app.py sozdizimsel olarak gecerli mi? (Streamlit calistirmadan)"""
     import py_compile

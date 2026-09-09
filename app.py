@@ -47,7 +47,7 @@ ui.apply_theme()
 
 
 @st.cache_data
-def ornekleri_yukle(n: int = 400):
+def ornekleri_yukle(n: int = 600):
     return gen.generate(total=n, seed=20260906)
 
 
@@ -163,41 +163,61 @@ with sekme1:
         # Teşhis en üstte, tam genişlikte
         ui.sonuc_karti(bulgu.error_class, bulgu.error_step, bulgu.reason)
 
-        sol, orta, sag = st.columns([1.05, 0.95, 0.8])
+        # Çift graf — projenin tezi tek görselde: solda ne verildi, sağda
+        # öğrenci nasıl ilerledi, arada tutarsızlığın nerede olduğu.
+        ui.sekil(
+            viz.dual_graph_svg(
+                secilen["figure"],
+                renderer.to_svg(
+                    secilen["figure"],
+                    secilen["rendering"]["coords"],
+                    secilen["rendering"].get("note", "Şekil ölçekli değildir."),
+                ),
+                st.session_state["adimlar"],
+                bulgu.error_step,
+                bulgu.error_class,
+            )
+        )
+        st.markdown(viz.legend_html(), unsafe_allow_html=True)
+
+        st.write("")
+        sol, sag = st.columns([1.15, 1])
 
         with sol:
             ui.bolum("Problem")
             st.markdown(f"**{secilen['soru']}**")
             st.write("")
-            sekli_ciz(secilen)
-            st.write("")
             satirlar, eksikler = verilen_satirlari(secilen["figure"])
             ui.verilenler_karti(satirlar, eksikler)
 
-        with orta:
-            ui.bolum("Çözüm adımları")
-            for i, adim in enumerate(st.session_state["adimlar"]):
-                ui.adim_satiri(adim, adim["id"] == bulgu.error_step)
-                yeni_kural = st.selectbox(
-                    f"{adim['id']} gerekçesi",
-                    KURAL_SECENEKLERI,
-                    index=KURAL_SECENEKLERI.index(adim["rule"])
-                    if adim["rule"] in KURAL_SECENEKLERI
-                    else 0,
-                    key=f"rule_{i}",
-                    label_visibility="collapsed",
-                )
-                st.session_state["adimlar"][i]["rule"] = yeni_kural
-
         with sag:
-            ui.bolum("Akıl yürütme grafı")
+            ui.bolum("Adımların gerekçesini değiştir")
             st.markdown(
-                viz.reasoning_graph_svg(
-                    st.session_state["adimlar"], bulgu.error_step, width=290
-                ),
+                '<div class="altyazi">Bir adımın gerekçesini değiştirdiğinde '
+                "teşhis anında yeniden hesaplanır.</div>",
                 unsafe_allow_html=True,
             )
-            st.markdown(viz.legend_html(), unsafe_allow_html=True)
+            st.write("")
+            for i, adim in enumerate(st.session_state["adimlar"]):
+                c1, c2 = st.columns([1, 1.4])
+                with c1:
+                    st.markdown(
+                        f'<div style="padding-top:6px"><b>{adim["id"]}</b> '
+                        f'<span class="altyazi">{adim["claim"]}</span></div>',
+                        unsafe_allow_html=True,
+                    )
+                with c2:
+                    yeni_kural = st.selectbox(
+                        f"{adim['id']} gerekçesi",
+                        KURAL_SECENEKLERI,
+                        index=KURAL_SECENEKLERI.index(adim["rule"])
+                        if adim["rule"] in KURAL_SECENEKLERI
+                        else 0,
+                        key=f"rule_{i}",
+                        label_visibility="collapsed",
+                    )
+                    st.session_state["adimlar"][i]["rule"] = yeni_kural
+
             st.write("")
             with st.expander("Üretecin etiketi"):
                 etiket = secilen["label"]
