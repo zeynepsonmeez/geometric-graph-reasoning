@@ -32,6 +32,7 @@ import feedback as fbk  # noqa: E402
 import generator as gen  # noqa: E402
 import renderer  # noqa: E402
 import theorems  # noqa: E402
+import turkce  # noqa: E402
 import ui  # noqa: E402
 import verifier as vf  # noqa: E402
 import visualize as viz  # noqa: E402
@@ -59,7 +60,7 @@ def verilen_satirlari(figure: dict) -> tuple[list[str], list[str]]:
             seg["type"]
         )
         if tip:
-            satirlar.append(f"[{seg['from']}{seg['to']}] {tip}tir")
+            satirlar.append(f"[{seg['from']}{seg['to']}] {turkce.dir(tip)}")
         if seg.get("length") is not None:
             satirlar.append(f"|{seg['from']}{seg['to']}| = {seg['length']}")
     for aci in figure.get("angles", []):

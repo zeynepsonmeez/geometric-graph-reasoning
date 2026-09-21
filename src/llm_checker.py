@@ -28,6 +28,8 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+
+import turkce
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Protocol
@@ -164,7 +166,7 @@ def _figure_lines(figure: dict[str, Any]) -> list[str]:
             "bisector": "açıortay",
         }.get(seg.get("type", "side"))
         if tip:
-            satirlar.append(f"- {ad} {tip}tır")
+            satirlar.append(f"- {ad} {turkce.dir(tip)}")
         if seg.get("length") is not None:
             satirlar.append(f"- |{seg['from']}{seg['to']}| = {seg['length']}")
 

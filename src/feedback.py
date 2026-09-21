@@ -23,6 +23,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any
 
+import turkce
 from theorems import GIVEN, THEOREMS, PredicateKind, get
 
 #: Adım kimliğini okunur sıraya çevirmek için.
@@ -232,7 +233,8 @@ def _h2(figure, steps, adim, refs, theorem, uygulanabilir) -> Feedback:
             f"**{ELEMAN_ADI.get(beklenen, beklenen)}** özelliğini uyguladın."
         )
         neden = (
-            f"[{seg}] bir **{ELEMAN_ADI.get(gercek, gercek)}**tır, "
+            f"[{seg}] bir **{ELEMAN_ADI.get(gercek, gercek)}**"
+            f"{turkce.ek_dir(ELEMAN_ADI.get(gercek, gercek))}, "
             f"{ELEMAN_ADI.get(beklenen, beklenen)} değil. "
             f"{theorem.name_tr}."
         )

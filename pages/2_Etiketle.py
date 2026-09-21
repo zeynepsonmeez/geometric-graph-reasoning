@@ -26,6 +26,7 @@ sys.path.insert(0, str(ROOT / "src"))
 
 import handwritten as hw  # noqa: E402
 import renderer  # noqa: E402
+import turkce  # noqa: E402
 import ui  # noqa: E402
 import visualize as viz  # noqa: E402
 
@@ -107,7 +108,7 @@ with sol:
             seg["type"]
         )
         if tip:
-            satirlar.append(f"[{seg['from']}{seg['to']}] {tip}tir")
+            satirlar.append(f"[{seg['from']}{seg['to']}] {turkce.dir(tip)}")
         if seg.get("length") is not None:
             satirlar.append(f"|{seg['from']}{seg['to']}| = {seg['length']}")
     for a in fig.get("angles", []):
