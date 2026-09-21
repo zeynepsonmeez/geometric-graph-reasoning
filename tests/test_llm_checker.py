@@ -191,9 +191,29 @@ def test_prompt_degisince_parmak_izi_degisir() -> None:
     assert a != b
 
 
+class _Stub:
+    """Gercek istemci taklidi.
+
+    FakeClient KULLANILMAZ: onun yaniti bilincli olarak onbelleklenmez
+    (bkz. test_sahte_yanit_onbelleklenmez), dolayisiyla onbellek davranisini
+    onunla sinamak yaniltici olur.
+    """
+
+    def __init__(self, sinif: str = "H1"):
+        self.sinif = sinif
+        self.calls: list[tuple[str, str]] = []
+
+    def complete(self, system: str, user: str):
+        self.calls.append((system, user))
+        return json.dumps({
+            "hata_var_mi": True, "hata_sinifi": self.sinif,
+            "hatali_adim": "s1", "aciklama": "",
+        }), {}
+
+
 def test_onbellek_ikinci_cagriyi_engeller(tmp_path, monkeypatch) -> None:
     monkeypatch.setattr(llm, "CACHE_DIR", tmp_path)
-    client = llm.FakeClient()
+    client = _Stub()
 
     ilk = llm.ask(ORNEK, "K2", client)
     ikinci = llm.ask(ORNEK, "K2", client)
@@ -229,3 +249,39 @@ def test_ucuz_model_daha_ucuz() -> None:
     opus = llm.estimate_cost(100, model="claude-opus-5")["toplam_usd"]
     haiku = llm.estimate_cost(100, model="claude-haiku-4-5")["toplam_usd"]
     assert haiku < opus
+
+
+def test_sahte_yanit_onbelleklenmez(tmp_path, monkeypatch) -> None:
+    """Prova kosusu onbellegi kirletirse GERCEK kosu sahte yanitlari geri okur.
+
+    Hata sessizdir: deney kosulmus gorunur, sonuclar uydurmadir. Bu yuzden
+    FakeClient'in yaniti hicbir kosulda diske yazilmaz.
+    """
+    monkeypatch.setattr(llm, "CACHE_DIR", tmp_path)
+    client = llm.FakeClient()
+
+    llm.ask(ORNEK, "K2", client, use_cache=True)
+    assert not list(tmp_path.rglob("*.json")), "sahte yanit onbellege yazildi"
+
+    # Ikinci cagri da gercekten istemciye gitmeli, onbellekten gelmemeli
+    llm.ask(ORNEK, "K2", client, use_cache=True)
+    assert len(client.calls) == 2
+
+
+def test_gercek_istemci_onbelleklenir(tmp_path, monkeypatch) -> None:
+    """Sahte olmayan istemcinin yaniti onbelleklenmeye devam etmeli."""
+    monkeypatch.setattr(llm, "CACHE_DIR", tmp_path)
+
+    class Gercekmis:
+        def __init__(self):
+            self.calls = 0
+
+        def complete(self, system: str, user: str):
+            self.calls += 1
+            return '{"hata_var_mi": true, "hata_sinifi": "H3", ' \
+                   '"hatali_adim": "s1", "aciklama": "x"}', {}
+
+    c = Gercekmis()
+    llm.ask(ORNEK, "K2", c, use_cache=True)
+    llm.ask(ORNEK, "K2", c, use_cache=True)
+    assert c.calls == 1, "gercek yanit onbelleklenmedi"

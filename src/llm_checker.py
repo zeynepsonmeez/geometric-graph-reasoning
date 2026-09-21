@@ -414,7 +414,14 @@ def ask(
     except Exception as e:  # ağ/API hatası tahmin hatasından ayrı raporlanır
         pred = Prediction(error=f"{type(e).__name__}: {e}")
 
-    if use_cache and pred.error is None:
+    # Sahte istemcinin yanıtı ASLA diske yazılmaz.
+    #
+    # Yazılsaydı: prova koşusu önbelleği doldurur, sonraki GERÇEK koşu aynı
+    # prompt parmak izine denk gelir ve sahte yanıtları geri okur. Deney
+    # koşulmuş görünür, sonuçlar uydurmadır ve hata sessizdir.
+    sahte = isinstance(client, FakeClient)
+
+    if use_cache and pred.error is None and not sahte:
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(
             json.dumps(pred.to_dict(), ensure_ascii=False, indent=2), encoding="utf-8"

@@ -414,6 +414,7 @@ def main() -> None:
     if args.dry_run:
         print("Mod            : DRY-RUN (sahte istemci, ucret yok)\n")
         client: llm.LLMClient = llm.FakeClient()
+        print("                 sahte yanitlar onbellege YAZILMAZ")
     else:
         print(f"Tahmini maliyet: ~${kestirim['toplam_usd']:.2f} ({args.model})")
         print("(onbellekteki cagrilar tekrar ucretlendirilmez)\n")
