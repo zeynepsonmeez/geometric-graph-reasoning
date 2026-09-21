@@ -71,6 +71,7 @@ seçer; `bias: "neutral"` belirgin biçimde genel görünür.
 | Bileşen | Rol |
 |---|---|
 | Sembolik doğrulayıcı | **Etiketleme oracle'ı ve ürünün motoru.** Ölçüm nesnesi değildir. |
+| Geri bildirim üretici | Doğrulayıcının kararından öğrenciye yönelik açıklama üretir. Deneye **girmez**. |
 | Dil modeli | **Ölçülen tek şey.** Ne üreteci ne doğrulayıcıyı görür. |
 
 **Araştırma sorusu:** Bir dil modeli, geometrik bir akıl yürütme zincirindeki
@@ -102,6 +103,22 @@ Ortak olan spesifikasyondur (`docs/taksonomi.md`), kod değildir.
 
 Bu kural [`tests/test_independence.py`](tests/test_independence.py) ile denetlenir.
 Aynı test, doğrulayıcının `rendering` bloğunu okumadığını da doğrular.
+
+---
+
+## Geri bildirim
+
+Doğrulayıcı hatanın **nerede** olduğunu söyler; `src/feedback.py` **niçin**
+olduğunu ve **ne yapılması gerektiğini** söyler:
+
+> **Ne yaptın?** 3. adımda B köşesinde dik açı olduğunu "verilen" olarak kullandın.
+> **Neden geçersiz?** Bu bilgi verilenler listesinde yok. Şekilde öyle görünmesi
+> onu verilen yapmaz — şekiller ölçekli değildir.
+> **Eksik olan:** Soruda `m(B) = 90°` verilmiş olsaydı bu adım geçerli olurdu.
+
+`Eksik olan` hesaplanabilir bir alandır: sağlanmayan ön koşul, neyin eksik
+olduğunu zaten tam olarak söyler. "Yanlış" demek yerine eksiği adıyla göstermek,
+geri bildirimi düzeltilebilir kılar.
 
 ---
 
@@ -138,7 +155,8 @@ schema/                    JSON şeması (figure / rendering / steps / label)
 src/theorems.py            10 teorem + ön koşulları
 src/generator.py           sentetik üreteç
 src/renderer.py            çizim motoru + bias
-src/verifier.py            sembolik doğrulayıcı
+src/verifier.py            sembolik doğrulayıcı (hata NEREDE)
+src/feedback.py            öğrenciye geri bildirim (hata NİÇİN, ne eksik)
 src/llm_checker.py         K1–K4 kolları
 src/handwritten.py         elle yazılan küme: iskelet, denetim, çizim
 src/worksheet.py           gönüllüler için problem föyü

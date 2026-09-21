@@ -14,6 +14,9 @@ Tasarım kararları:
 
 from __future__ import annotations
 
+import html
+import re
+
 import streamlit as st
 
 NAVY = "#22345e"
@@ -159,6 +162,52 @@ def sonuc_karti(sinif: str, adim: str | None, gerekce: str) -> None:
   {adim_rozet}
   <div class="gerekce">{gerekce}</div>
 </div>""",
+        unsafe_allow_html=True,
+    )
+
+
+def _md_to_html(metin: str) -> str:
+    """`**kalın**` işaretlerini HTML'e çevirir.
+
+    Geri bildirim metinleri hem markdown (rapor, CLI) hem HTML (arayüz) olarak
+    kullanılır. Ham yıldızların ekrana düşmemesi için burada dönüştürülür;
+    metin önce kaçırılır ki iddia içeriği HTML enjekte edemesin.
+    """
+    return re.sub(
+        r"[*][*](.+?)[*][*]", lambda m: f"<b>{m.group(1)}</b>", html.escape(metin)
+    )
+
+
+def geri_bildirim_karti(fb) -> None:
+    """Öğrenciye yönelik açıklama.
+
+    Teşhis kartı hatanın NEREDE olduğunu söyler; bu kart NİÇİN olduğunu ve
+    ne yapılması gerektiğini söyler. İkisi görsel olarak da ayrı durur.
+    """
+    bolumler = [("Ne yaptın?", fb.ne_yaptin)]
+    if fb.neden_gecersiz and fb.neden_gecersiz != "—":
+        bolumler.append(("Neden geçersiz?", fb.neden_gecersiz))
+    if fb.eksik_olan and fb.eksik_olan != "—":
+        bolumler.append(("Eksik olan", fb.eksik_olan))
+    bolumler.append(("Ders", fb.oneri))
+
+    govde = "".join(
+        f'<div style="margin-bottom:9px"><span style="font-weight:700;color:{NAVY}">'
+        f"{etiket}</span> {_md_to_html(metin)}</div>"
+        for etiket, metin in bolumler
+    )
+    if fb.kirlenmis:
+        govde += (
+            f'<div style="margin-top:10px;padding-top:8px;border-top:1px solid {LINE};'
+            f'font-size:.86rem;color:{MUTED}">'
+            f"{', '.join(fb.kirlenmis)} adımları bu hataya dayandığı için sonuçları "
+            f"güvenilir değil; ayrıca hata sayılmazlar.</div>"
+        )
+
+    st.markdown(
+        f'<div class="veri" style="line-height:1.65">'
+        f'<div style="font-family:Georgia,serif;font-size:1.05rem;font-weight:700;'
+        f'color:{NAVY};margin-bottom:10px">{html.escape(fb.baslik)}</div>{govde}</div>',
         unsafe_allow_html=True,
     )
 

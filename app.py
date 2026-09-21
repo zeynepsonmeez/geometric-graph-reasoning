@@ -28,6 +28,7 @@ import streamlit as st
 ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT / "src"))
 
+import feedback as fbk  # noqa: E402
 import generator as gen  # noqa: E402
 import renderer  # noqa: E402
 import theorems  # noqa: E402
@@ -184,6 +185,11 @@ with sekme1:
         sol, sag = st.columns([1.15, 1])
 
         with sol:
+            ui.bolum("Öğrenciye geri bildirim")
+            ui.geri_bildirim_karti(
+                fbk.explain_finding(secilen["figure"], st.session_state["adimlar"], bulgu)
+            )
+            st.write("")
             ui.bolum("Problem")
             st.markdown(f"**{secilen['soru']}**")
             st.write("")
