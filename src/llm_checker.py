@@ -39,7 +39,7 @@ ARMS = ("K1", "K2", "K3", "K4")
 CLASSES = ("H0", "H1", "H2", "H3")
 
 #: Deneyin varsayılan ayarları. Sonuç dosyalarına yazılır ki koşullar
-#: bildiride birebir raporlanabilsin.
+#: raporda birebir belirtilebilsin.
 DEFAULT_MODEL = "claude-opus-5"
 DEFAULT_EFFORT = "high"
 DEFAULT_MAX_TOKENS = 2000

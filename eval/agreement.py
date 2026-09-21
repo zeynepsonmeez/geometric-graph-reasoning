@@ -4,7 +4,7 @@ Sentetik derlemde etiket üreteçten gelir; kodlayıcı uyumu diye bir şey yokt
 Bu ölçüm yalnızca **elle yazılan küme** için anlamlıdır ve taksonominin öznel
 olmadığının kanıtıdır (docs/taksonomi.md §4.5).
 
-Bildiriye girecek cümle şu biçimdedir:
+Rapora girecek cümle şu biçimdedir:
 
     "İki bağımsız kodlayıcı arasında N örneklik kümede κ = 0.8X uyum elde edilmiştir."
 
@@ -112,7 +112,7 @@ def build_report() -> tuple[str, dict[str, object]]:
             "> **κ < 0.75.** Bu bir başarısızlık değildir; taksonominin",
             "> netleştirilmesi gerektiğinin sinyalidir. Aşağıdaki uyuşmazlıkları",
             "> inceleyip `docs/taksonomi.md` §4.4'teki karar kurallarını",
-            "> keskinleştirin ve bu durumu bildiride raporlayın.",
+            "> keskinleştirin ve bu durumu raporda belirtin.",
             "",
         ]
 

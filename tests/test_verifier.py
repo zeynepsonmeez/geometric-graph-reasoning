@@ -265,7 +265,7 @@ def test_gecerli_cozumde_eleman_tipi_degisince_h2() -> None:
 def test_sentetik_derlemle_tam_uyum() -> None:
     """Oracle, kendi spesifikasyonundan üretilmiş veriyle örtüşmelidir.
 
-    DİKKAT: Bu bir başarım sonucu değildir ve bildiride böyle raporlanmaz.
+    DİKKAT: Bu bir başarım sonucu değildir ve raporda boyle sunulmaz.
     Doğrulayıcı altın standarttır; sentetik veride %100 alması tanım gereğidir.
     Buradaki işlevi yalnızca regresyon yakalamaktır.
     """

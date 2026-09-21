@@ -263,11 +263,11 @@ dengeli biçimde ölçme olanağını ortadan kaldırır. Kapsamı bir sınıf g
 maliyeti yalnızca ifade değişikliğidir; yardımcı elemanlar zaten üçgen
 geometrisinin ayrılmaz parçasıdır ve lise öğretim programının bütününde yer alır.
 
-Bildiride kullanılacak ifade: **"MEB Türkiye Yüzyılı Maarif Modeli 9 ve 10. sınıf
+Raporda kullanılacak ifade: **"MEB Türkiye Yüzyılı Maarif Modeli 9 ve 10. sınıf
 matematik öğretim programı üçgenler kazanımları ile hizalanmıştır."**
 "9. sınıf ile hizalıdır" denmeyecektir.
 
-> Kodlar tymm.meb.gov.tr üzerinden alınmıştır; bildiriye girmeden önce öğretim
+> Kodlar tymm.meb.gov.tr üzerinden alınmıştır; rapora girmeden önce öğretim
 > programının resmî PDF'inden ayrıca teyit edilmelidir.
 
 ---

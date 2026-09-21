@@ -150,6 +150,6 @@ raporlanır. Dağılımı tutturmak için etiket değiştirilmez.
 ## Etik
 
 Bu küme **gerçek öğrenci verisi değildir**. Gönüllüler öğrenci değil, öğrenci
-hatası taklidi üreten yetişkinlerdir. Bu bir sınırlılıktır ve bildiride açıkça
+hatası taklidi üreten yetişkinlerdir. Bu bir sınırlılıktır ve raporda açıkça
 beyan edilir. Gerçek öğrenci verisiyle çalışma, KVKK aydınlatma metni, veli
 onamı ve etik kurul izniyle ayrı bir faz olarak ele alınacaktır.

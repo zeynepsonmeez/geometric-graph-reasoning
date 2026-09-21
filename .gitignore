@@ -45,3 +45,7 @@ eval/results/cache/
 # Uretilen foy — seed ile yeniden uretilir
 data/handwritten/foy.html
 data/handwritten/foy.md
+
+# Bildiri taslagi — yerel kalir, depoya girmez
+docs/bildiri-taslagi.md
+tests/test_bildiri.py
