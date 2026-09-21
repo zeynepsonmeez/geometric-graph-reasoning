@@ -187,7 +187,12 @@ with sekme1:
         with sol:
             ui.bolum("Öğrenciye geri bildirim")
             ui.geri_bildirim_karti(
-                fbk.explain_finding(secilen["figure"], st.session_state["adimlar"], bulgu)
+                fbk.explain_finding(
+                    secilen["figure"],
+                    st.session_state["adimlar"],
+                    bulgu,
+                    vf.applicable_rules(secilen["figure"]),
+                )
             )
             st.write("")
             ui.bolum("Problem")

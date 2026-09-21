@@ -28,7 +28,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any
 
-from theorems import GIVEN, ErrorClass, PredicateKind, Theorem, get
+from theorems import THEOREMS, GIVEN, ErrorClass, PredicateKind, Theorem, get
 
 #: `figure` içinde bir ilişkinin tutulduğu alan adları.
 ASSERT_FIELDS = {
@@ -328,3 +328,47 @@ def verify(figure: dict[str, Any], steps: list[dict[str, Any]]) -> Finding:
 def verify_solution(solution: dict[str, Any]) -> Finding:
     """Çözüm nesnesinden yalnızca izin verilen alanları geçirerek denetler."""
     return verify(solution["figure"], solution["steps"])
+
+
+# --------------------------------------------------------------------------
+# Yol gösterme: bu şekilde hangi kurallar uygulanabilir?
+# --------------------------------------------------------------------------
+
+#: Kullanımı kısıtlayan, varlığı kısıtlamayan yüklemler.
+#:
+#: `dis_aci` her üçgende uygulanabilir; `REMOTE_ANGLES` yüklemi teoremin
+#: *var olup olmadığını* değil, öğrencinin doğru açı çiftini seçip seçmediğini
+#: denetler. Uygulanabilirlik sorarken bu tür koşullar atlanır, yoksa her
+#: zaman "uygulanamaz" çıkar.
+KULLANIM_KOSULLARI = {PredicateKind.REMOTE_ANGLES}
+
+
+def applicable_rules(figure: dict[str, Any]) -> list[str]:
+    """Verilenlerin şu hâliyle ön koşulları sağlanan teoremlerin kimlikleri.
+
+    Doğrulayıcı "bu adım geçersiz" der; bu fonksiyon "peki ne yapılabilirdi"
+    sorusunu yanıtlar. Geri bildirim katmanı sonucu metne çevirir — kararı
+    yine doğrulayıcı verir.
+    """
+    uygun: list[str] = []
+    for theorem in THEOREMS.values():
+        if all(
+            pre.kind in KULLANIM_KOSULLARI
+            or _check_precondition(pre.kind, pre.params, figure, {})
+            for pre in theorem.preconditions
+        ):
+            uygun.append(theorem.id)
+    return uygun
+
+
+def segment_types(figure: dict[str, Any]) -> dict[str, str]:
+    """Şekildeki yardımcı elemanların adı → tipi eşlemesi.
+
+    H2'de "hangi kuralı kullanmalıydın" sorusunun cevabı buradan çıkar:
+    [AH] bir yükseklikse, yükseklik teoremi uygulanabilir demektir.
+    """
+    return {
+        seg["from"] + seg["to"]: seg["type"]
+        for seg in _segments(figure)
+        if seg.get("type") in ("altitude", "median", "bisector")
+    }

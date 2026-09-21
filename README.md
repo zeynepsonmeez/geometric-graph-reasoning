@@ -115,10 +115,17 @@ olduğunu ve **ne yapılması gerektiğini** söyler:
 > **Neden geçersiz?** Bu bilgi verilenler listesinde yok. Şekilde öyle görünmesi
 > onu verilen yapmaz — şekiller ölçekli değildir.
 > **Eksik olan:** Soruda `m(B) = 90°` verilmiş olsaydı bu adım geçerli olurdu.
+> **Nasıl ilerlemeliydin?** Bu bilgi verilmediğine göre ondan yararlanamazsın.
+> Verilenlerin şu hâliyle uygulanabilecek kurallar: iç açılar toplamı, dış açı.
 
 `Eksik olan` hesaplanabilir bir alandır: sağlanmayan ön koşul, neyin eksik
 olduğunu zaten tam olarak söyler. "Yanlış" demek yerine eksiği adıyla göstermek,
 geri bildirimi düzeltilebilir kılar.
+
+`Nasıl ilerlemeliydin?` bir adım öteye gider: `verifier.applicable_rules()`
+verilenlerin şu hâliyle ön koşulu sağlanan teoremleri döndürür, geri bildirim
+bunları sayar. Kalan kural yetmiyorsa bu da açıkça söylenir — sorunun eksik
+verilmiş olabileceği bilgisi öğrenci için de değerlidir.
 
 ---
 

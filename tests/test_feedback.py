@@ -167,3 +167,95 @@ def test_tum_orneklerde_patlamaz() -> None:
         bulgu = vf.verify_solution(sol)
         f = fb.explain_finding(sol["figure"], sol["steps"], bulgu)
         assert f.as_markdown().strip()
+
+
+# --------------------------------------------------------------------------
+# Yol gösterme: "nasıl ilerlemeliydin?"
+# --------------------------------------------------------------------------
+
+
+def _ornek_yol(sinif: str, violated: str | None = None):
+    """Uygulanabilir kural listesi çağıran tarafça hesaplanır; feedback almaz."""
+    for sol in SOLUTIONS:
+        bulgu = vf.verify_solution(sol)
+        if bulgu.error_class != sinif:
+            continue
+        if violated and bulgu.violated != violated:
+            continue
+        uygun = vf.applicable_rules(sol["figure"])
+        return sol, bulgu, fb.explain_finding(sol["figure"], sol["steps"], bulgu, uygun)
+    pytest.skip(f"{sinif}/{violated} ornegi bulunamadi")
+
+
+@pytest.mark.parametrize("sinif", ["H1", "H2", "H3"])
+def test_yol_gosterme_bos_degil(sinif: str) -> None:
+    _, _, f = _ornek_yol(sinif)
+    assert f.nasil.strip(), f"{sinif}: 'nasil ilerlemeliydin' bos"
+
+
+def test_h1_yol_gostermesi_uygulanabilir_kurallari_sayar() -> None:
+    sol, _, f = _ornek_yol("H1")
+    from theorems import get
+
+    for kid in vf.applicable_rules(sol["figure"]):
+        t = get(kid)
+        if t:
+            assert t.name_tr in f.nasil, f"{kid} onerilmemis"
+
+
+def test_h2_eleman_tipine_uyan_kurali_onerir() -> None:
+    """Parca bir aciortaysa aciortay kurali onerilmelidir."""
+    sol, bulgu, f = _ornek_yol("H2", "segment_type")
+    hatali = next(s for s in sol["steps"] if s["id"] == bulgu.error_step)
+    seg = hatali.get("refs", {}).get("segment")
+    gercek = vf.segment_types(sol["figure"]).get(seg) or vf.segment_types(
+        sol["figure"]
+    ).get(seg[::-1] if seg else "")
+
+    from theorems import get
+
+    uyan = fb._tipe_uyan_kurallar(gercek)
+    assert uyan, f"{gercek} tipine uyan kural yok"
+    assert any(get(k).name_tr in f.nasil for k in uyan), f.nasil
+
+
+def test_h2_eslestirme_hatasinda_benzerlik_ifadesi_hatirlatilir() -> None:
+    sol, _, f = _ornek_yol("H2", "correspondence")
+    benzer = sol["figure"]["similar"][0]
+    assert benzer[0] in f.nasil and benzer[1] in f.nasil
+
+
+def test_uygulanabilir_kurallar_gercekten_gecerli() -> None:
+    """Onerilen her kuralin on kosulu gercekten saglanmali."""
+    from theorems import get
+
+    for sol in SOLUTIONS[:60]:
+        for kid in vf.applicable_rules(sol["figure"]):
+            t = get(kid)
+            steps = [{"id": "s1", "claim": "", "rule": kid, "depends_on": [], "refs": {}}]
+            bulgu = vf.verify(sol["figure"], steps)
+            # dis_aci kullanım koşulu ister; availability listesinde olması normal
+            if kid == "dis_aci":
+                continue
+            assert bulgu.is_clean, (
+                f"{sol['problem_id']}: {kid} uygulanabilir sayildi ama "
+                f"dogrulayici '{bulgu.error_class}' diyor"
+            )
+
+
+def test_uygulanamaz_kural_listede_yok() -> None:
+    """Diklik verilmemisse pisagor onerilmemeli."""
+    for sol in SOLUTIONS:
+        if not sol["figure"].get("perpendicular"):
+            assert "pisagor" not in vf.applicable_rules(sol["figure"])
+
+
+def test_cozum_yoksa_durust_sekilde_soylenir() -> None:
+    """Kalan kural yetmiyorsa bunu belirtmek durustluktur."""
+    assert "soru eksik" in fb._yetmiyor_notu(["ic_acilar_toplami"])
+    assert fb._yetmiyor_notu(["a", "b", "c"]) == ""
+
+
+def test_yol_gosterme_markdown_da_gorunur() -> None:
+    _, _, f = _ornek_yol("H3")
+    assert "Nasıl ilerlemeliydin?" in f.as_markdown()

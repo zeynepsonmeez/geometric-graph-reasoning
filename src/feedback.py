@@ -23,7 +23,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any
 
-from theorems import GIVEN, get
+from theorems import GIVEN, THEOREMS, PredicateKind, get
 
 #: Adım kimliğini okunur sıraya çevirmek için.
 SIRA_ADI = {1: "1.", 2: "2.", 3: "3.", 4: "4.", 5: "5."}
@@ -76,6 +76,7 @@ class Feedback:
     neden_gecersiz: str
     eksik_olan: str
     oneri: str
+    nasil: str = ""
     kirlenmis: tuple[str, ...] = ()
 
     def as_markdown(self) -> str:
@@ -85,6 +86,7 @@ class Feedback:
         for etiket, deger in (
             ("Neden geçersiz?", self.neden_gecersiz),
             ("Eksik olan:", self.eksik_olan),
+            ("Nasıl ilerlemeliydin?", self.nasil),
         ):
             if deger and deger != "—":
                 satirlar += ["", f"**{etiket}** {deger}"]
@@ -119,6 +121,39 @@ def _kirlenmisler(steps: list[dict[str, Any]], adim_id: str | None) -> tuple[str
     return tuple(sorted(kirli - {adim_id}))
 
 
+def _kural_adlari(ids: list[str]) -> str:
+    adlar = [t.name_tr for i in ids if (t := get(i))]
+    return ", ".join(f"**{a}**" for a in adlar) if adlar else ""
+
+
+def _tipe_uyan_kurallar(tip: str) -> list[str]:
+    """Şekildeki elemanın tipine gerçekten uyan teoremler.
+
+    H2'de "hangi kuralı kullanmalıydın" sorusunun cevabı budur: parça bir
+    yükseklikse, yükseklik ön koşulu isteyen teoremler uygulanabilir.
+    """
+    return [
+        t.id
+        for t in THEOREMS.values()
+        if any(
+            p.kind is PredicateKind.SEGMENT_TYPE
+            and len(p.params) > 1
+            and p.params[1] == tip
+            for p in t.preconditions
+        )
+    ]
+
+
+def _yetmiyor_notu(uygulanabilir: list[str]) -> str:
+    """Kalan kurallar soruyu çözmeye yetmiyorsa bunu söylemek dürüstlüktür."""
+    if len(uygulanabilir) <= 1:
+        return (
+            " Verilenlerin şu hâliyle çözüme götürecek başka bir kural yok; "
+            "soru eksik verilmiş olabilir."
+        )
+    return ""
+
+
 def _segment_tipi(figure: dict[str, Any], ad: str | None) -> str | None:
     if not ad:
         return None
@@ -131,7 +166,7 @@ def _segment_tipi(figure: dict[str, Any], ad: str | None) -> str | None:
 # --------------------------------------------------------------------------
 
 
-def _h1(figure, steps, adim, refs) -> Feedback:
+def _h1(figure, steps, adim, refs, uygulanabilir) -> Feedback:
     """Öğrenci, verilmemiş bir bilgiyi 'verilen' saymış."""
     tur = refs.get("asserts")
     sira = _sira(steps, adim["id"])
@@ -165,11 +200,16 @@ def _h1(figure, steps, adim, refs) -> Feedback:
         ),
         eksik_olan=eksik,
         oneri=DERS["H1"],
+        nasil=(
+            "Bu bilgi verilmediğine göre ondan yararlanamazsın. Verilenlerin "
+            f"şu hâliyle uygulanabilecek kurallar: {_kural_adlari(uygulanabilir)}."
+            + _yetmiyor_notu(uygulanabilir)
+        ),
         kirlenmis=_kirlenmisler(steps, adim["id"]),
     )
 
 
-def _h2(figure, steps, adim, refs, theorem) -> Feedback:
+def _h2(figure, steps, adim, refs, theorem, uygulanabilir) -> Feedback:
     """Kullanılan teoremin gerektirdiği eleman tipi tutmuyor."""
     sira = _sira(steps, adim["id"])
     seg = refs.get("segment")
@@ -200,6 +240,14 @@ def _h2(figure, steps, adim, refs, theorem) -> Feedback:
             f"Bu adımın geçerli olması için [{seg}] parçasının "
             f"**{ELEMAN_ADI.get(beklenen, beklenen)}** olması gerekirdi."
         )
+        # Şekildeki parça hangi tipteyse, ona uyan kural kullanılmalıydı.
+        uyanlar = _tipe_uyan_kurallar(gercek)
+        nasil = (
+            f"[{seg}] bir {ELEMAN_ADI.get(gercek, gercek)} olduğuna göre "
+            f"{_kural_adlari(uyanlar)} kuralını kullanmalıydın."
+            if uyanlar
+            else f"[{seg}] parçasının tipine uygun bir kural seçmelisin."
+        )
     else:
         ne = f"{sira} adımda karşılıklı elemanları yanlış eşleştirdin."
         neden = (
@@ -207,6 +255,13 @@ def _h2(figure, steps, adim, refs, theorem) -> Feedback:
             "ABC ~ DEF ise A↔D, B↔E, C↔F."
         )
         eksik = "Eşlemenin köşe sırasına uygun yapılması gerekirdi."
+        benzer = (figure.get("similar") or [[None, None]])[0]
+        nasil = (
+            f"Benzerlik ifadesi {benzer[0]} ~ {benzer[1]} olduğuna göre karşılıklı "
+            f"köşeleri baştan eşle, orantıyı ondan sonra kur."
+            if benzer[0]
+            else "Karşılıklı kenarları benzerlik ifadesindeki köşe sırasından oku."
+        )
 
     return Feedback(
         baslik="Kavramları birbirine karıştırdın",
@@ -214,11 +269,12 @@ def _h2(figure, steps, adim, refs, theorem) -> Feedback:
         neden_gecersiz=neden,
         eksik_olan=eksik,
         oneri=DERS[ders_anahtari],
+        nasil=nasil,
         kirlenmis=_kirlenmisler(steps, adim["id"]),
     )
 
 
-def _h3(figure, steps, adim, theorem, mesaj) -> Feedback:
+def _h3(figure, steps, adim, theorem, mesaj, uygulanabilir) -> Feedback:
     """Teorem doğru, ön koşulu sağlanmıyor."""
     sira = _sira(steps, adim["id"])
     ad = theorem.name_tr if theorem else adim.get("rule", "bir teorem")
@@ -235,6 +291,11 @@ def _h3(figure, steps, adim, theorem, mesaj) -> Feedback:
         eksik_olan=(
             "Teoremin ön koşulunun verilenlerde sağlanması gerekirdi; "
             "sağlanmadığı için bu adımdan çıkan sonuç geçersizdir."
+        ),
+        nasil=(
+            "Verilenlerin şu hâliyle uygulanabilecek kurallar: "
+            f"{_kural_adlari(uygulanabilir)}."
+            + _yetmiyor_notu(uygulanabilir)
         ),
         oneri=DERS["H3"],
         kirlenmis=_kirlenmisler(steps, adim["id"]),
@@ -259,6 +320,7 @@ def explain(
     error_class: str,
     error_step: str | None,
     reason: str,
+    uygulanabilir: list[str] | None = None,
 ) -> Feedback:
     """Doğrulayıcının kararından öğrenciye yönelik geri bildirim üretir.
 
@@ -275,15 +337,27 @@ def explain(
     refs = adim.get("refs") or {}
     theorem = None if adim.get("rule") == GIVEN else get(adim.get("rule"))
 
+    uygulanabilir = uygulanabilir or []
+
     if error_class == "H1":
-        return _h1(figure, steps, adim, refs)
+        return _h1(figure, steps, adim, refs, uygulanabilir)
     if error_class == "H2":
-        return _h2(figure, steps, adim, refs, theorem) if theorem else TEMIZ
-    return _h3(figure, steps, adim, theorem, reason)
+        return _h2(figure, steps, adim, refs, theorem, uygulanabilir) if theorem else TEMIZ
+    return _h3(figure, steps, adim, theorem, reason, uygulanabilir)
 
 
-def explain_finding(figure: dict[str, Any], steps: list[dict[str, Any]], finding) -> Feedback:
-    """`verifier.Finding` nesnesinden doğrudan geri bildirim üretir."""
+def explain_finding(
+    figure: dict[str, Any],
+    steps: list[dict[str, Any]],
+    finding,
+    uygulanabilir: list[str] | None = None,
+) -> Feedback:
+    """`verifier.Finding` nesnesinden doğrudan geri bildirim üretir.
+
+    `uygulanabilir` listesini çağıran taraf `verifier.applicable_rules()` ile
+    hesaplayıp geçirir; bu modül doğrulayıcıyı import etmez.
+    """
     return explain(
-        figure, steps, finding.error_class, finding.error_step, finding.reason
+        figure, steps, finding.error_class, finding.error_step, finding.reason,
+        uygulanabilir,
     )

@@ -189,6 +189,8 @@ def geri_bildirim_karti(fb) -> None:
         bolumler.append(("Neden geçersiz?", fb.neden_gecersiz))
     if fb.eksik_olan and fb.eksik_olan != "—":
         bolumler.append(("Eksik olan", fb.eksik_olan))
+    if getattr(fb, "nasil", ""):
+        bolumler.append(("Nasıl ilerlemeliydin?", fb.nasil))
     bolumler.append(("Ders", fb.oneri))
 
     govde = "".join(
